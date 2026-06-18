@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 interface AvailabilityBadgeProps {
-  status: ' Available' | 'occupied' | 'reserved';
+  status: 'available' | 'occupied' | 'reserved';
   className?: string;
   showDot?: boolean;
 }
