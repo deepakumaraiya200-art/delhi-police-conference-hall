@@ -12,9 +12,9 @@ export function PageHeader({ title, description, children, className }: PageHead
   return (
     <div className={cn('flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6', className)}>
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
+        <h1 className="text-2xl   tracking-tight text-foreground">{title}</h1>
         {description && (
-          <p className="text-sm text-muted-foreground mt-1">{description}</p>
+          <p className="text-sm text-neutral-500/90 mt-1">{description}</p>
         )}
       </div>
       {children && <div className="flex items-center gap-2">{children}</div>}

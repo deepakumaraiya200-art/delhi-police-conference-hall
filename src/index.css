@@ -121,11 +121,33 @@
 }
 
 .fc .fc-button {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
   border-radius: 0.5rem !important;
   font-weight: 500 !important;
   font-size: 0.875rem !important;
   padding: 0.5rem 1rem !important;
   transition: all 0.2s !important;
+  color: #3b82f6 !important;
+  box-shadow: none !important;
+}
+
+.fc .fc-button:hover {
+  background-color: #eff6ff !important;
+  color: #2563eb !important;
+  box-shadow: none !important;
+}
+
+.fc .fc-button:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.fc .fc-button-active {
+  background-color: #dbeafe !important;
+  color: #1d4ed8 !important;
+  box-shadow: none !important;
 }
 
 .fc .fc-toolbar-title {

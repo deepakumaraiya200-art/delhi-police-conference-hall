@@ -239,18 +239,7 @@ export default function RoomDetails() {
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div
-            className={cn(
-              'w-14 h-14 rounded-xl flex items-center justify-center shrink-0',
-              currentRoom.type === 'Auditorium'
-                ? 'bg-gradient-to-br from-violet-500 to-purple-700'
-                : currentRoom.type === 'Mini Auditorium'
-                ? 'bg-gradient-to-br from-blue-500 to-indigo-700'
-                : 'bg-gradient-to-br from-primary to-indigo-600'
-            )}
-          >
-            <Building2 className="w-7 h-7 text-white" />
-          </div>
+        
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold tracking-tight">{currentRoom.name}</h1>
@@ -356,7 +345,7 @@ export default function RoomDetails() {
                     key={amenity}
                     className="flex items-center gap-2.5 p-3 rounded-xl bg-muted/50 border"
                   >
-                    <div className="p-1.5 rounded-lg bg-primary/10 text-primary">
+                    <div className="p-1.5  border border-neutral-500/30 rounded-full p-2 text-primary">
                       {amenityIconMap[amenity] || <CheckCircle2 className="w-4 h-4" />}
                     </div>
                     <span className="text-sm font-medium">{amenity}</span>

@@ -23,6 +23,9 @@ import { useNotificationStore } from '@/store/notificationStore';
 import { useUserStore } from '@/store/userStore';
 import { cn, getInitials } from '@/lib/utils';
 import { format } from 'date-fns';
+import { MdOutlineNightlight } from "react-icons/md";
+import { GoSun } from "react-icons/go";
+import { IoMdNotificationsOutline } from "react-icons/io";
 
 interface NavbarProps {
   onMenuToggle: () => void;
@@ -64,16 +67,16 @@ export function Navbar({ onMenuToggle, sidebarCollapsed }: NavbarProps) {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search rooms, bookings..."
-              className="pl-9 bg-muted/50 border-0 focus-visible:ring-1"
+              className="pl-9 bg-neutral-400/5  border border-neutral-500/20  rounded-2xl "
             />
           </div>
         </div>
 
         {/* Right section */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center ">
           {/* Dark Mode Toggle */}
-          <Button variant="ghost" size="icon" onClick={toggleDarkMode} className="rounded-full">
-            {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          <Button variant="ghost" onClick={toggleDarkMode} className="rounded-full">
+            {darkMode ? <GoSun className="h-4 w-4" /> : <MdOutlineNightlight className="h-15 w-15" />}
           </Button>
 
           {/* Notifications */}
@@ -136,7 +139,7 @@ export function Navbar({ onMenuToggle, sidebarCollapsed }: NavbarProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                 <Avatar className="h-9 w-9">
-                  <AvatarImage src={currentUser?.avatar} alt={currentUser?.name} />
+                  <AvatarImage src='https://ik.imagekit.io/qwzhnpeqg/delhi%20police/Screenshot_2026-06-10_194556-removebg-preview.png?updatedAt=1781100986877' alt={currentUser?.name} />
                   <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
                     {currentUser ? getInitials(currentUser.name) : 'U'}
                   </AvatarFallback>

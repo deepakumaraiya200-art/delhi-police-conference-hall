@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 interface AvailabilityBadgeProps {
-  status: 'available' | 'occupied' | 'reserved';
+  status: ' Available' | 'occupied' | 'reserved';
   className?: string;
   showDot?: boolean;
 }
@@ -13,12 +13,12 @@ export function AvailabilityBadge({ status, className, showDot = true }: Availab
     available: {
       label: 'Available',
       variant: 'success' as const,
-      dotColor: 'bg-emerald-500',
+      dotColor: '#258533',
     },
     occupied: {
       label: 'Occupied',
       variant: 'destructive' as const,
-      dotColor: 'bg-red-500',
+      dotColor: '#852526',
     },
     reserved: {
       label: 'Reserved',
@@ -30,10 +30,7 @@ export function AvailabilityBadge({ status, className, showDot = true }: Availab
   const { label, variant, dotColor } = config[status];
 
   return (
-    <Badge variant={variant} className={cn('gap-1.5', className)}>
-      {showDot && (
-        <span className={cn('h-1.5 w-1.5 rounded-full', dotColor, status === 'available' && 'animate-pulse-dot')} />
-      )}
+    <Badge variant={variant} className={cn('gap-1.5  opacity-50', className)}>
       {label}
     </Badge>
   );

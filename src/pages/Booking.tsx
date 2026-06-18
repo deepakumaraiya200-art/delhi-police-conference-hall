@@ -175,15 +175,6 @@ export default function Booking() {
         <ArrowLeft className="w-4 h-4" /> Back
       </Button>
 
-      <PageHeader
-        title="Book a Room"
-        description="Fill in the details below to reserve a conference room"
-      >
-        <Badge variant="secondary" className="gap-1.5">
-          <CalendarPlus className="w-3.5 h-3.5" />
-          New Booking
-        </Badge>
-      </PageHeader>
 
       <form onSubmit={handleSubmit(onFormSubmit as any)}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -192,8 +183,7 @@ export default function Booking() {
             {/* Meeting Details */}
             <Card className="animate-fade-in">
               <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-primary" />
+                <CardTitle className="text-2xl font-bold items-center  flex items-center gap-2">
                   Meeting Details
                 </CardTitle>
               </CardHeader>

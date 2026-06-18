@@ -111,9 +111,9 @@ export default function Dashboard() {
         title="Dashboard"
         description="Overview of your conference room bookings"
       >
-        <Button onClick={() => navigate('/book')} className="gap-2">
-          <Plus className="w-4 h-4" />
-          Book Room
+        <Button onClick={() => navigate('/book')} className="gap-2 text-[#535bad] border borer-neutral-500/20">
+          <Plus className="w-4 h-4 text-[#535bad]" />
+          Book New Hall
         </Button>
       </PageHeader>
 
@@ -158,7 +158,7 @@ export default function Dashboard() {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Room Utilization Bar Chart */}
         <Card className="animate-fade-in">
           <CardHeader className="pb-2">
@@ -178,7 +178,7 @@ export default function Dashboard() {
           <CardContent className="pt-0">
             <div className="h-[280px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={utilizationData} barGap={2} barCategoryGap="20%">
+                <BarChart data={utilizationData} barGap={2} barCategoryGap="20%" style={{ cursor: 'default' }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                   <XAxis
                     dataKey="day"
@@ -193,6 +193,7 @@ export default function Dashboard() {
                     tickFormatter={(v) => `${v}%`}
                   />
                   <RechartsTooltip
+                    cursor={{ fill: 'transparent' }}
                     contentStyle={{
                       backgroundColor: 'hsl(var(--card))',
                       border: '1px solid hsl(var(--border))',
@@ -201,23 +202,23 @@ export default function Dashboard() {
                     }}
                     formatter={(value: any) => [`${value}%`, undefined]}
                   />
-                  <Bar dataKey="Tower I" fill="#6366f1" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Tower II" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Bridge Tower" fill="#a78bfa" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Tower I" fill="#535bad" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Tower II" fill="#6b72c7" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Bridge Tower" fill="#8b91d4" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
             <div className="flex items-center justify-center gap-6 mt-2">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="w-3 h-3 rounded-sm bg-[#6366f1]" />
+                <span className="w-3 h-3 rounded-sm bg-[#535bad]" />
                 Tower I
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="w-3 h-3 rounded-sm bg-[#8b5cf6]" />
+                <span className="w-3 h-3 rounded-sm bg-[#6b72c7]" />
                 Tower II
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="w-3 h-3 rounded-sm bg-[#a78bfa]" />
+                <span className="w-3 h-3 rounded-sm bg-[#8b91d4]" />
                 Bridge Tower
               </div>
             </div>
@@ -246,8 +247,8 @@ export default function Dashboard() {
                 <AreaChart data={bookingTrendData}>
                   <defs>
                     <linearGradient id="bookingGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#535bad" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#535bad" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
@@ -273,7 +274,7 @@ export default function Dashboard() {
                   <Area
                     type="monotone"
                     dataKey="bookings"
-                    stroke="#6366f1"
+                    stroke="#535bad"
                     strokeWidth={2}
                     fill="url(#bookingGradient)"
                   />
@@ -290,8 +291,8 @@ export default function Dashboard() {
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold">Upcoming Meetings</h2>
-              <p className="text-sm text-muted-foreground">Your next scheduled meetings</p>
+              <h2 className="text-lg ">Upcoming Meetings</h2>
+              <p className="text-sm text-neutral-400/90">Your next scheduled meetings</p>
             </div>
             <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate('/my-bookings')}>
               View All <ArrowRight className="w-3 h-3" />
@@ -307,7 +308,7 @@ export default function Dashboard() {
               onAction={() => navigate('/book')}
             />
           ) : (
-            <div className="space-y-3">
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
               {displayUpcoming.map((booking) => (
                 <BookingCard
                   key={booking.id}
@@ -323,55 +324,7 @@ export default function Dashboard() {
 
         {/* Quick Actions */}
         <div className="space-y-4">
-          <div>
-            <h2 className="text-lg font-semibold">Quick Actions</h2>
-            <p className="text-sm text-muted-foreground">Common tasks at a glance</p>
-          </div>
-          <Card className="animate-fade-in">
-            <CardContent className="p-4 space-y-3">
-              <Button
-                className="w-full justify-start gap-3 h-12"
-                onClick={() => navigate('/book')}
-              >
-                <div className="p-1.5 rounded-lg bg-white/20">
-                  <Plus className="w-4 h-4" />
-                </div>
-                <div className="text-left">
-                  <div className="font-medium text-sm">Book a Room</div>
-                  <div className="text-xs opacity-80">Reserve a conference room</div>
-                </div>
-              </Button>
-
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-3 h-12"
-                onClick={() => navigate('/calendar')}
-              >
-                <div className="p-1.5 rounded-lg bg-primary/10">
-                  <Calendar className="w-4 h-4 text-primary" />
-                </div>
-                <div className="text-left">
-                  <div className="font-medium text-sm">View Calendar</div>
-                  <div className="text-xs text-muted-foreground">See all schedules</div>
-                </div>
-              </Button>
-
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-3 h-12"
-                onClick={() => navigate('/rooms')}
-              >
-                <div className="p-1.5 rounded-lg bg-emerald-50">
-                  <Activity className="w-4 h-4 text-emerald-600" />
-                </div>
-                <div className="text-left">
-                  <div className="font-medium text-sm">Live Status</div>
-                  <div className="text-xs text-muted-foreground">Room availability</div>
-                </div>
-              </Button>
-            </CardContent>
-          </Card>
-
+         
           {/* Today's Summary */}
           <Card className="animate-fade-in">
             <CardHeader className="pb-3">

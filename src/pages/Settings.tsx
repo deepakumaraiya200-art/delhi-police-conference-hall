@@ -62,11 +62,11 @@ function SettingsPage() {
 
       <div className="max-w-3xl space-y-6">
         {/* ── Profile Section ────────────────────────────────────────────────── */}
-        <Card className="shadow-sm">
+        <Card className="">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
-                <User className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <div className="p-1.5 rounded-full border border-neutral-500/30">
+                <User className="w-4 h-4 " />
               </div>
               <div>
                 <CardTitle className="text-base">Profile</CardTitle>
@@ -81,7 +81,7 @@ function SettingsPage() {
               <>
                 <div className="flex items-center gap-4">
                   <Avatar className="h-16 w-16">
-                    <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+                    <AvatarImage src="https://ik.imagekit.io/qwzhnpeqg/delhi%20police/Screenshot_2026-06-10_194556-removebg-preview.png" className='border rounded-full border-neutral-500/10' alt={currentUser.name} />
                     <AvatarFallback className="text-lg bg-primary/10 text-primary">
                       {getInitials(currentUser.name)}
                     </AvatarFallback>
@@ -97,9 +97,11 @@ function SettingsPage() {
                 <Separator />
                 <div className="grid gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-muted">
-                      <AtSign className="w-4 h-4 text-muted-foreground" />
-                    </div>
+            
+              <div className="p-1.5 rounded-full border border-neutral-500/30">
+                <User className="w-4 h-4 " />
+              </div>
+
                     <div>
                       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Full Name
@@ -108,9 +110,11 @@ function SettingsPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-muted">
-                      <Mail className="w-4 h-4 text-muted-foreground" />
-                    </div>
+                    
+                                  <div className="p-1.5 rounded-full border border-neutral-500/30">
+                <Mail className="w-4 h-4 " />
+              </div>
+
                     <div>
                       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Email Address
@@ -119,9 +123,12 @@ function SettingsPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-muted">
-                      <Building2 className="w-4 h-4 text-muted-foreground" />
-                    </div>
+                  
+
+                                                      <div className="p-1.5 rounded-full border border-neutral-500/30">
+                <Building2 className="w-4 h-4 " />
+              </div>
+
                     <div>
                       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Department
@@ -141,8 +148,8 @@ function SettingsPage() {
         <Card className="shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-amber-100 dark:bg-amber-900/30">
-                <Bell className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <div className="p-1.5 rounded-full border border-neutral-500/30">
+                <Bell className="w-4 h-4" />
               </div>
               <div>
                 <CardTitle className="text-base">Notification Preferences</CardTitle>
@@ -155,8 +162,8 @@ function SettingsPage() {
           <CardContent className="space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-muted">
-                  <Mail className="w-4 h-4 text-muted-foreground" />
+                <div className="p-1.5 rounded-full border border-neutral-500/30">
+                  <Mail className="w-4 h-4" />
                 </div>
                 <div>
                   <Label htmlFor="email-notifications" className="text-sm font-medium cursor-pointer">
@@ -176,8 +183,8 @@ function SettingsPage() {
             <Separator />
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-muted">
-                  <Smartphone className="w-4 h-4 text-muted-foreground" />
+                <div className="p-1.5 rounded-full border border-neutral-500/30">
+                  <Smartphone className="w-4 h-4" />
                 </div>
                 <div>
                   <Label htmlFor="push-notifications" className="text-sm font-medium cursor-pointer">
@@ -197,8 +204,8 @@ function SettingsPage() {
             <Separator />
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-muted">
-                  <Clock className="w-4 h-4 text-muted-foreground" />
+                <div className="p-1.5 rounded-full border border-neutral-500/30">
+                  <Clock className="w-4 h-4" />
                 </div>
                 <div>
                   <Label htmlFor="booking-reminders" className="text-sm font-medium cursor-pointer">
@@ -218,8 +225,8 @@ function SettingsPage() {
             <Separator />
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-muted">
-                  <Bell className="w-4 h-4 text-muted-foreground" />
+                <div className="p-1.5 rounded-full border border-neutral-500/30">
+                  <Bell className="w-4 h-4" />
                 </div>
                 <div>
                   <Label htmlFor="status-alerts" className="text-sm font-medium cursor-pointer">
@@ -243,8 +250,8 @@ function SettingsPage() {
         <Card className="shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-                <Monitor className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+              <div className="p-1.5 rounded-full border border-neutral-500/30">
+                <Monitor className="w-4 h-4" />
               </div>
               <div>
                 <CardTitle className="text-base">Display Preferences</CardTitle>
@@ -257,8 +264,8 @@ function SettingsPage() {
           <CardContent className="space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-muted">
-                  <Moon className="w-4 h-4 text-muted-foreground" />
+                <div className="p-1.5 rounded-full border border-neutral-500/30">
+                  <Moon className="w-4 h-4" />
                 </div>
                 <div>
                   <Label htmlFor="dark-mode" className="text-sm font-medium cursor-pointer">
@@ -281,8 +288,8 @@ function SettingsPage() {
             <Separator />
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-muted">
-                  <LayoutGrid className="w-4 h-4 text-muted-foreground" />
+                <div className="p-1.5 rounded-full border border-neutral-500/30">
+                  <LayoutGrid className="w-4 h-4" />
                 </div>
                 <div>
                   <Label htmlFor="compact-view" className="text-sm font-medium cursor-pointer">
@@ -306,8 +313,8 @@ function SettingsPage() {
         <Card className="shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
-                <Info className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <div className="p-1.5 rounded-full border border-neutral-500/30">
+                <Info className="w-4 h-4" />
               </div>
               <div>
                 <CardTitle className="text-base">About</CardTitle>

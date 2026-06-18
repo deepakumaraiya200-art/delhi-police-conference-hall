@@ -22,6 +22,7 @@ export interface User {
 
 export interface Room {
   id: string;
+  imgsrc:string;
   name: string;
   roomNumber: string;
   tower: Tower;

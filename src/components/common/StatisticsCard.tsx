@@ -2,6 +2,8 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { type LucideIcon } from 'lucide-react';
+import { IoIosArrowRoundUp } from "react-icons/io";
+import { IoIosArrowRoundDown } from "react-icons/io";
 
 interface StatisticsCardProps {
   title: string;
@@ -25,11 +27,12 @@ export function StatisticsCard({
   iconBg = 'bg-primary/10',
 }: StatisticsCardProps) {
   return (
+    
     <Card className={cn('animate-fade-in', className)}>
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+      <CardContent className="p-4">
+        <div className=" ">
+          <div className="space-y-2 flex flex-col justify-center items-center">
+            <p className="text-sm font-medium text-[#535bad]">{title}</p>
             <p className="text-3xl font-bold tracking-tight">{value}</p>
             {description && (
               <p className="text-xs text-muted-foreground">{description}</p>
@@ -42,15 +45,15 @@ export function StatisticsCard({
                     trend.value >= 0 ? 'text-emerald-600' : 'text-red-600'
                   )}
                 >
-                  {trend.value >= 0 ? '+' : ''}
+                  {trend.value >= 0
+                    ? <IoIosArrowRoundUp className='w-4 h-4 inline' />
+                    : <IoIosArrowRoundDown className='w-4 h-4 inline' />
+                  }
                   {trend.value}%
                 </span>
                 <span className="text-xs text-muted-foreground">{trend.label}</span>
               </div>
             )}
-          </div>
-          <div className={cn('p-3 rounded-xl', iconBg)}>
-            <Icon className={cn('w-6 h-6', iconColor)} />
           </div>
         </div>
       </CardContent>

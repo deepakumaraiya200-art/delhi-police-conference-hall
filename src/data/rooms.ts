@@ -4,6 +4,7 @@ export const rooms: Room[] = [
   // ── Tower I ─────────────────────────────────────────────────────────────
   {
     id: 'room-1',
+    imgsrc: "https://ik.imagekit.io/qwzhnpeqg/delhi%20police/WhatsApp%20Image%202026-06-16%20at%204.01.42%20PM.jpeg",
     name: 'Adarsh Auditorium',
     roomNumber: 'GF-AUD',
     tower: 'Tower I',
@@ -18,6 +19,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-2',
+    imgsrc:'https://ik.imagekit.io/qwzhnpeqg/delhi%20police/WhatsApp%20Image%202026-06-16%20at%204.00.15%20PM.jpeg',
     name: 'Media Conference Hall',
     roomNumber: '13',
     tower: 'Tower I',
@@ -32,6 +34,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-3',
+    imgsrc:'https://ik.imagekit.io/qwzhnpeqg/delhi%20police/WhatsApp%20Image%202026-06-16%20at%204.01.12%20PM%20(1).jpeg',
     name: 'Room 107',
     roomNumber: '107',
     tower: 'Tower I',
@@ -45,21 +48,8 @@ export const rooms: Room[] = [
     description: 'Compact conference hall managed by HRD, suitable for training sessions, interviews, and small departmental meetings.',
   },
   {
-    id: 'room-4',
-    name: 'Room 203',
-    roomNumber: '203',
-    tower: 'Tower I',
-    floor: '2nd Floor',
-    capacity: { min: 50, max: 80 },
-    managedBy: 'DCP/GA',
-    type: 'Mini Auditorium',
-    status: 'occupied',
-    amenities: ['Projector', 'Microphone', 'AC', 'Video Conferencing', 'WiFi', 'Sound System', 'Whiteboard'],
-    image: '/images/room-203.jpg',
-    description: 'A mini auditorium on the 2nd floor managed by DCP/GA. Ideal for medium-scale presentations, workshops, and inter-departmental meetings.',
-  },
-  {
     id: 'room-5',
+    imgsrc:'https://ik.imagekit.io/qwzhnpeqg/delhi%20police/WhatsApp%20Image%202026-06-16%20at%204.01.12%20PM%20(1).jpeg?updatedAt=1781769406901',
     name: 'Room 307',
     roomNumber: '307',
     tower: 'Tower I',
@@ -74,6 +64,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-6',
+    imgsrc:'https://ik.imagekit.io/qwzhnpeqg/delhi%20police/WhatsApp%20Image%202026-06-16%20at%204.01.12%20PM.jpeg?updatedAt=1781769403723',
     name: 'Room 420',
     roomNumber: '420',
     tower: 'Tower I',
@@ -88,6 +79,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-7',
+        imgsrc:'https://ik.imagekit.io/qwzhnpeqg/delhi%20police/WhatsApp%20Image%202026-06-16%20at%204.00.15%20PM.jpeg?updatedAt=1781769407886',
     name: 'Room 1305',
     roomNumber: '1305',
     tower: 'Tower I',
@@ -102,6 +94,8 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-8',
+        imgsrc:'https://ik.imagekit.io/qwzhnpeqg/delhi%20police/WhatsApp%20Image%202026-06-16%20at%204.01.42%20PM.jpeg?updatedAt=1781769408261',
+
     name: 'Room 1400',
     roomNumber: '1400',
     tower: 'Tower I',
@@ -114,24 +108,13 @@ export const rooms: Room[] = [
     image: '/images/room-1400.jpg',
     description: 'Intimate conference hall managed by the PRO office. Best suited for small group discussions, press briefings, and coordination meetings.',
   },
-  {
-    id: 'room-9',
-    name: 'Conference Hall 17th Floor',
-    roomNumber: '1700',
-    tower: 'Tower I',
-    floor: '17th Floor',
-    capacity: { min: 30, max: 45 },
-    managedBy: 'CP Secretariat',
-    type: 'Conference Hall',
-    status: 'occupied',
-    amenities: ['Projector', 'Microphone', 'AC', 'WiFi', 'Video Conferencing', 'Sound System', 'Smart TV'],
-    image: '/images/room-1700.jpg',
-    description: 'Premium conference hall on the 17th floor managed by CP Secretariat. Reserved for high-level meetings, VIP conferences, and executive sessions.',
-  },
+ 
 
   // ── Bridge Tower ────────────────────────────────────────────────────────
   {
     id: 'room-10',
+        imgsrc:'https://ik.imagekit.io/qwzhnpeqg/delhi%20police/WhatsApp%20Image%202026-06-16%20at%204.01.41%20PM.jpeg?updatedAt=1781768695669',
+
     name: 'Room 1429',
     roomNumber: '1429',
     tower: 'Bridge Tower',
@@ -148,6 +131,8 @@ export const rooms: Room[] = [
   // ── Tower II ────────────────────────────────────────────────────────────
   {
     id: 'room-11',
+        imgsrc:'https://ik.imagekit.io/qwzhnpeqg/delhi%20police/WhatsApp%20Image%202026-06-16%20at%204.00.30%20PM.jpeg?updatedAt=1781769394852',
+
     name: 'Room 124',
     roomNumber: '124',
     tower: 'Tower II',
@@ -160,46 +145,6 @@ export const rooms: Room[] = [
     image: '/images/room-124.jpg',
     description: 'Versatile conference hall on the 1st floor of Tower II. Managed by Reception, frequently used for visitor meetings and welcome orientations.',
   },
-  {
-    id: 'room-12',
-    name: 'Room 216',
-    roomNumber: '216',
-    tower: 'Tower II',
-    floor: '2nd Floor',
-    capacity: { min: 25, max: 40 },
-    managedBy: 'L&O Zone-1',
-    type: 'Conference Hall',
-    status: 'reserved',
-    amenities: ['Projector', 'Whiteboard', 'AC', 'WiFi', 'Video Conferencing', 'Microphone'],
-    image: '/images/room-216.jpg',
-    description: 'Conference hall managed by L&O Zone-1. Designed for law and order coordination meetings, briefings, and inter-zone discussions.',
-  },
-  {
-    id: 'room-13',
-    name: 'Room 326',
-    roomNumber: '326',
-    tower: 'Tower II',
-    floor: '3rd Floor',
-    capacity: { min: 30, max: 50 },
-    managedBy: 'Reception',
-    type: 'Conference Hall',
-    status: 'available',
-    amenities: ['Projector', 'Whiteboard', 'AC', 'WiFi', 'Video Conferencing', 'Microphone', 'Sound System'],
-    image: '/images/room-326.jpg',
-    description: 'Spacious conference hall on the 3rd floor of Tower II. Managed by Reception, ideal for larger departmental meetings and collaborative sessions.',
-  },
-  {
-    id: 'room-14',
-    name: 'Room 727',
-    roomNumber: '727',
-    tower: 'Tower II',
-    floor: '7th Floor',
-    capacity: { min: 30, max: 60 },
-    managedBy: 'Special Cell',
-    type: 'Conference Hall',
-    status: 'occupied',
-    amenities: ['Projector', 'Microphone', 'AC', 'WiFi', 'Video Conferencing', 'Sound System', 'Whiteboard', 'Smart TV'],
-    image: '/images/room-727.jpg',
-    description: 'High-capacity conference hall managed by Special Cell. Features enhanced security provisions and is suitable for sensitive briefings and large team assemblies.',
-  },
+  
+ 
 ];

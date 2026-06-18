@@ -25,19 +25,9 @@ export function RoomCard({ room, view = 'grid' }: RoomCardProps) {
 
   if (view === 'list') {
     return (
-      <Card className="animate-fade-in hover:shadow-lg transition-all duration-300">
-        <div className="flex items-center p-4 gap-4">
-          <div
-            className={cn(
-              'w-16 h-16 rounded-xl flex items-center justify-center shrink-0',
-              room.status === 'available' ? 'bg-emerald-50 text-emerald-600' :
-              room.status === 'occupied' ? 'bg-red-50 text-red-600' :
-              'bg-amber-50 text-amber-600'
-            )}
-          >
-            <Building2 className="w-7 h-7" />
-          </div>
-          <div className="flex-1 min-w-0">
+      <Card className="animate-fade-in   duration-300">
+      
+          <div className="flex flex-col p-3 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="font-semibold truncate">{room.name}</h3>
               <AvailabilityBadge status={room.status} />
@@ -51,7 +41,7 @@ export function RoomCard({ room, view = 'grid' }: RoomCardProps) {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 p-3">
             <Button variant="outline" size="sm" onClick={() => navigate(`/rooms/${room.id}`)}>
               Details
             </Button>
@@ -59,24 +49,20 @@ export function RoomCard({ room, view = 'grid' }: RoomCardProps) {
               Book
             </Button>
           </div>
-        </div>
+       
       </Card>
     );
   }
 
   return (
-    <Card className="group animate-fade-in hover:shadow-xl transition-all duration-300 overflow-hidden">
+    <Card className="group animate-fade-in  transition-all duration-300 overflow-hidden">
       {/* Room visual header */}
       <div
-        className={cn(
-          'h-36 relative flex items-end p-4',
-          room.type === 'Auditorium'
-            ? 'bg-gradient-to-br from-violet-500 to-purple-700'
-            : room.type === 'Mini Auditorium'
-            ? 'bg-gradient-to-br from-blue-500 to-indigo-700'
-            : 'bg-gradient-to-br from-primary to-indigo-600'
-        )}
+        className="relative flex items-end p-1"
       >
+        {room.imgsrc && (
+        <img src={room.imgsrc} className='rounded-lg '/>
+        )}
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute top-3 right-3 z-10">
           <AvailabilityBadge status={room.status} />
@@ -87,9 +73,7 @@ export function RoomCard({ room, view = 'grid' }: RoomCardProps) {
             <p className="text-white/80 text-sm">Room {room.roomNumber}</p>
           )}
         </div>
-        <div className="absolute bottom-0 right-0 opacity-10">
-          <Building2 className="w-24 h-24 text-white transform translate-x-4 translate-y-4" />
-        </div>
+       
       </div>
 
       <CardContent className="p-4 space-y-3">
@@ -144,7 +128,7 @@ export function RoomCard({ room, view = 'grid' }: RoomCardProps) {
         </Button>
         <Button
           size="sm"
-          className="flex-1 gap-1"
+          className="flex-1 gap-1 border-none font-semibold text-md "
           onClick={() => navigate(`/book?room=${room.id}`)}
         >
           Book Now <ArrowRight className="w-3 h-3" />

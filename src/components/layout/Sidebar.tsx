@@ -24,8 +24,6 @@ const navItems = [
   { path: '/calendar', label: 'Calendar', icon: Calendar },
   { path: '/book', label: 'Book Room', icon: Plus },
   { path: '/my-bookings', label: 'My Bookings', icon: ClipboardList },
-  { path: '/live', label: 'Live Availability', icon: Radio },
-  { path: '/reports', label: 'Reports', icon: BarChart3 },
   { path: '/settings', label: 'Settings', icon: Settings },
 ];
 
@@ -41,21 +39,25 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          'fixed left-0 top-0 z-40 h-screen border-r bg-sidebar transition-all duration-300 ease-in-out flex flex-col',
+          'fixed left-0 top-0 z-40 h-screen border-r border-neutral-500/30 bg-sidebar transition-all duration-300 ease-in-out flex flex-col',
           collapsed ? 'w-[68px]' : 'w-[260px]'
         )}
       >
         {/* Logo Section */}
-        <div className={cn('flex items-center h-16 px-4 border-b', collapsed ? 'justify-center' : 'gap-3')}>
-          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary text-primary-foreground">
-            <Building2 className="w-5 h-5" />
+        <div className={cn(' items-center h-30 px-1 border-b border-neutral-500/30', collapsed ? 'justify-center' : 'gap-3')}>
+ <div className='flex flex-col items-center'>
+          <img
+            src='https://ik.imagekit.io/qwzhnpeqg/delhi%20police/Screenshot_2026-06-10_194556-removebg-preview.png'
+            className='h-15 mt-1 w-auto'
+            alt='Delhi Police'
+          />
+          <div className='flex flex-col leading-snug items-center mt-1'>
+            <span className='text-[#535bad] font-bold text-md'>
+              Delhi <span className='text-red-500 font-bold text-md'>Police</span>
+            </span>
+            <div className='text-neutral-500 text-sm mb-4'>Conference Hall Booking System</div>
           </div>
-          {!collapsed && (
-            <div className="flex flex-col">
-              <span className="font-bold text-sm text-foreground">ConferenceHub</span>
-              <span className="text-[10px] text-muted-foreground">Booking System</span>
-            </div>
-          )}
+        </div>        
         </div>
 
         {/* Navigation */}
@@ -71,10 +73,10 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                   key={item.path}
                   to={item.path}
                   className={cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
+                    'flex items-center gap-3 border-neutral-500/30 rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200',
                     isActive
-                      ? 'bg-primary text-primary-foreground shadow-md shadow-primary/25'
-                      : 'text-sidebar-foreground hover:bg-sidebar-hover',
+                      ? 'bg-[#535bad] text-primary-foreground '
+                      : 'text-sidebar-foreground  hover:bg-sidebar-hover',
                     collapsed && 'justify-center px-2'
                   )}
                 >
