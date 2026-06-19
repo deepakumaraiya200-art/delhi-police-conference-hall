@@ -39,12 +39,12 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          'fixed left-0 top-0 z-40 h-screen border-r border-neutral-500/30 bg-sidebar transition-all duration-300 ease-in-out flex flex-col',
+          'fixed left-0 top-0 z-40 h-screen border-r border-neutral-500/30 bg-[#535bad] transition-all duration-300 ease-in-out flex flex-col',
           collapsed ? 'w-[68px]' : 'w-[260px]'
         )}
       >
         {/* Logo Section */}
-        <div className={cn(' items-center h-30 px-1 border-b border-neutral-500/30', collapsed ? 'justify-center' : 'gap-3')}>
+        <div className={cn(' items-center h-30 px-1  border-b border-neutral-500/30', collapsed ? 'justify-center' : 'gap-3')}>
  <div className='flex flex-col items-center'>
           <img
             src='https://ik.imagekit.io/qwzhnpeqg/delhi%20police/Screenshot_2026-06-10_194556-removebg-preview.png'
@@ -52,10 +52,10 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             alt='Delhi Police'
           />
           <div className='flex flex-col leading-snug items-center mt-1'>
-            <span className='text-[#535bad] font-bold text-md'>
+            <span className='text-white   font-bold text-md'>
               Delhi <span className='text-red-500 font-bold text-md'>Police</span>
             </span>
-            <div className='text-neutral-500 text-sm mb-4'>Conference Hall Booking System</div>
+            <div className='text-neutral-500 text-sm mb-4 text-white'>Conference Hall Booking System</div>
           </div>
         </div>        
         </div>
@@ -73,10 +73,10 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                   key={item.path}
                   to={item.path}
                   className={cn(
-                    'flex items-center gap-3 border-neutral-500/30 rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200',
+                    'flex items-center  gap-3 border-neutral-500/30 rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200',
                     isActive
-                      ? 'bg-[#535bad] text-primary-foreground '
-                      : 'text-sidebar-foreground  hover:bg-sidebar-hover',
+                      ? 'text-[#535bad]  bg-white '
+                      : 'text-white  hover:bg-sidebar-hover',
                     collapsed && 'justify-center px-2'
                   )}
                 >
@@ -107,21 +107,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <Separator />
 
         {/* Collapse Toggle */}
-        <div className="p-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            className={cn('w-full', collapsed ? 'px-2' : '')}
-            onClick={onToggle}
-          >
-            {collapsed ? <ChevronRight className="w-4 h-4" /> : (
-              <>
-                <ChevronLeft className="w-4 h-4" />
-                <span>Collapse</span>
-              </>
-            )}
-          </Button>
-        </div>
+      
       </aside>
     </TooltipProvider>
   );
