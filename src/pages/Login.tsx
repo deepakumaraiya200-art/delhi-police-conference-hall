@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
-import { CheckCircle2, Fingerprint } from 'lucide-react';
+import { CheckCircle2, Fingerprint, X, Shield, Building2, Phone, Mail, MapPin } from 'lucide-react';
 import { useUserStore } from '@/store/userStore';
 import { cn } from '@/lib/utils';
 
@@ -50,6 +50,7 @@ function FloatingParticles() {
 // ── Main Login Page ───────────────────────────────────────────────────────────
 
 export default function Login() {
+  const [showAbout, setShowAbout] = useState(false);
   const navigate = useNavigate();
   const { login, isAuthenticated } = useUserStore();
   const [showPassword, setShowPassword] = useState(false);
@@ -98,12 +99,84 @@ export default function Login() {
   };
 
   return (
-    <div className='flex  items-center justify-center min-h-screen bg-[#F5F7FA]'>
-      <div className='flex  flex-row justify-between items-center justify-center px-5 rounded-lg py-5 '>
+    <div
+      className='relative flex items-center justify-center min-h-screen'
+      style={{
+        backgroundImage: "url('https://ik.imagekit.io/qwzhnpeqg/_1572524008.avif')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div className='absolute inset-0 bg-black/40' />
 
- <form
+      {/* About Us Button */}
+      <button
+        onClick={() => setShowAbout(true)}
+        className='absolute top-4 right-4 z-20 border border-neutral-500/80 font-bold bg-white py-1 px-3 rounded-lg hover:bg-gray-200 transition text-sm'
+      >
+        About Us
+      </button>
+
+      {/* About Modal */}
+      {showAbout && (
+        <div className='absolute inset-0 z-30 flex items-center justify-center bg-black/50 backdrop-blur-sm'>
+          <div className='bg-white rounded-2xl shadow-2xl w-[480px] max-w-[90vw] overflow-hidden'>
+            {/* Header */}
+            <div className='bg-[#0f2344] px-6 py-5 flex items-center justify-between'>
+              <div className='flex items-center gap-3'>
+                <img
+                  src='https://ik.imagekit.io/qwzhnpeqg/delhi%20police/Screenshot_2026-06-10_194556-removebg-preview.png'
+                  className='h-10 w-auto'
+                  alt='Delhi Police'
+                />
+                <div className='  border-b border-white'>
+                  <h2 className='text-white font-bold text-lg leading-tight'>Delhi <span className='text-[#c9a84c]'>Police</span></h2>
+                  <p className='text-blue-200/60 text-xs border border-b border-white'>Conference Hall Booking System</p>
+                </div>
+              </div>
+              <button onClick={() => setShowAbout(false)} className='text-white/60 hover:text-white transition'>
+                <X className='w-5 h-5' />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className='px-6 py-5 space-y-4'>
+              <p className='text-sm text-slate-600 leading-relaxed'>
+                The <span className='font-semibold text-[#0f2344]'>Delhi Police Conference Hall Booking System</span> is an official digital platform developed to streamline the reservation and management of conference halls and meeting rooms at Police Headquarters (PHQ), New Delhi.
+              </p>
+
+              <div className='grid grid-cols-2 gap-3'>
+                {[
+                  { icon: Shield, label: 'Department', value: 'Delhi Police, PHQ' },
+                  { icon: Building2, label: 'Location', value: 'ITO, New Delhi - 110002' },
+                  { icon: Phone, label: 'Helpline', value: '011-23490000' },
+                  { icon: Mail, label: 'Email', value: 'phq@delhipolice.gov.in' },
+                ].map(({ icon: Icon, label, value }) => (
+                  <div key={label} className='flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100'>
+                    <div className='p-1.5 rounded-full border border-neutral-500/30 shrink-0'>
+                      <Icon className='w-3.5 h-3.5 text-[#0f2344]' />
+                    </div>
+                    <div>
+                      <p className='text-xs text-slate-400'>{label}</p>
+                      <p className='text-xs font-semibold text-slate-700'>{value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className='p-3 rounded-xl bg-[#0f2344]/5 border border-[#0f2344]/10'>
+                <p className='text-xs text-slate-500 text-center'>
+                  © {new Date().getFullYear()} Delhi Police · All rights reserved · Authorized personnel only
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <form
         onSubmit={handleSubmit(onSubmit as any)}
-        className='bg-white  h-auto w-[380px] p-6 flex flex-col gap-3 shadow-sm rounded-md'
+        className='relative z-10 bg-[#040c3d] h-auto w-[380px] p-6 flex flex-col gap-3 shadow-sm rounded-md'
       >
         {/* Logo + Title */}
         <div className='flex flex-col items-center'>
@@ -222,7 +295,6 @@ export default function Login() {
           <a href='/signup' className='text-[#1A237E] font-medium hover:underline'>Sign up</a>
         </p>
       </form>
-      </div>
     </div>
   );
 }
