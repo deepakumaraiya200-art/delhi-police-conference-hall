@@ -19,7 +19,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-2',
-    imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/6943be5b-2171-4366-8280-07b1ef242894.jpg',
+    imgsrc: 'https://ik.imagekit.io/gv06viaup/images/media_conf-2.jpeg',
     name: 'Media Conference Hall',
     roomNumber: '13',
     tower: 'Tower I',
@@ -34,7 +34,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-3',
-    imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/6e757ae2-d61a-4e54-ba69-0539f34b8166.jpg',
+    imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_107-3.jpeg',
 
     name: 'Room 107',
     roomNumber: '107',
@@ -50,7 +50,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-4',
-    imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/0a9a0815-e3f6-4fca-a476-ae794ec493d6.jpg',
+    imgsrc: 'https://ik.imagekit.io/gv06viaup/images/vimarsh-2.jpeg',
 
     name: 'Room 203',
     roomNumber: '203',
@@ -66,7 +66,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-5',
-    imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/WhatsApp%20Image%202026-06-16%20at%204.00.14%20PM.jpeg',
+    imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_307-2.jpeg',
 
     name: 'Room 307',
     roomNumber: '307',
@@ -98,7 +98,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-7',
-    imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/1bb1d442-3997-4675-a95a-f332bbe7f7cf.jpg',
+    imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_1305-2.jpeg',
 
     name: 'Room 1305',
     roomNumber: '1305',
@@ -114,7 +114,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-8',
-    imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/cf107fb3-868e-4d9c-9a1b-994d92453742.jpg',
+    imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_1400-3.jpeg',
 
     name: 'Room 1400',
     roomNumber: '1400',
@@ -148,7 +148,7 @@ export const rooms: Room[] = [
   // ── Bridge Tower ────────────────────────────────────────────────────────
   {
     id: 'room-10',
-    imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/4aabf23d-217d-494a-8832-1c160d740c93.jpg',
+    imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_1429-2.jpeg',
 
     name: 'Room 1429',
     roomNumber: '1429',
@@ -182,7 +182,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-12',
-    imgsrc: "https://ik.imagekit.io/qwzhnpeqg/3a102c6d-1821-4ae6-8a56-5ab78941530f.jpg",
+    imgsrc: "https://ik.imagekit.io/gv06viaup/images/room_216-3.jpeg",
 
     name: 'Room 216',
     roomNumber: '216',
@@ -198,7 +198,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-13',
-    imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/8909a821-ddd9-49e1-8cc5-1a60314df636.jpg',
+    imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_326-2.jpeg',
 
     name: 'Room 326',
     roomNumber: '326',
@@ -214,7 +214,7 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-14',
-    imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/WhatsApp%20Image%202026-06-16%20at%204.01.43%20PM.jpeg',
+    imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_727-4.jpeg',
 
     name: 'Room 727',
     roomNumber: '727',
