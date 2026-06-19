@@ -225,7 +225,7 @@ export default function Booking() {
                   {/* Organizer */}
                   <div className="space-y-2">
                     <Label htmlFor="organizer" className="text-sm font-medium">
-                      Organizer <span className="text-destructive">*</span>
+                      Chaired by <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="organizer"
