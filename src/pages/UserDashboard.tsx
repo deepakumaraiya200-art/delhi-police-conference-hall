@@ -11,14 +11,144 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
   CalendarCheck, CheckCircle2, Clock, Plus, ArrowRight, Building2, FileText,
+  Shield, ShieldCheck, Star, Crown, BadgeCheck, User as UserIcon,
 } from 'lucide-react';
 import { rooms as allRoomsData } from '@/data/rooms';
 import { useUserBookings, useUpcomingBookings } from '@/hooks/useBookings';
 import { useUserStore } from '@/store/userStore';
-import type { Booking, Room } from '@/types';
-import { getRankLabel, RANK_COLORS, isOfficerRank, type OfficerRank } from '@/types';
+import type { Booking, Room, OfficerRank } from '@/types';
+import { getRankLabel, RANK_COLORS, isOfficerRank } from '@/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+
+// ─── Rank-specific banner config ────────────────────────────────────────────
+
+type RankBannerConfig = {
+  gradient: string;
+  accentColor: string;
+  textAccent: string;
+  borderAccent: string;
+  icon: React.ComponentType<{ className?: string }>;
+  subtitle: string;
+};
+
+const RANK_BANNER: Record<OfficerRank, RankBannerConfig> = {
+  cp: {
+    gradient: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 40%, #78350f 100%)',
+    accentColor: 'bg-amber-300/20 border-amber-300/40',
+    textAccent: 'text-amber-300',
+    borderAccent: 'border-amber-300/20',
+    icon: Crown,
+    subtitle: 'Commissioner of Police · Highest Command',
+  },
+  special_cp: {
+    gradient: 'linear-gradient(135deg, #4c1d95 0%, #5b21b6 40%, #312e81 100%)',
+    accentColor: 'bg-violet-300/20 border-violet-300/40',
+    textAccent: 'text-violet-300',
+    borderAccent: 'border-violet-300/20',
+    icon: Star,
+    subtitle: 'Special Commissioner of Police',
+  },
+  joint_cp: {
+    gradient: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 40%, #1e40af 100%)',
+    accentColor: 'bg-blue-300/20 border-blue-300/40',
+    textAccent: 'text-blue-300',
+    borderAccent: 'border-blue-300/20',
+    icon: ShieldCheck,
+    subtitle: 'Joint Commissioner of Police',
+  },
+  additional_cp: {
+    gradient: 'linear-gradient(135deg, #0c4a6e 0%, #0284c7 40%, #075985 100%)',
+    accentColor: 'bg-sky-300/20 border-sky-300/40',
+    textAccent: 'text-sky-300',
+    borderAccent: 'border-sky-300/20',
+    icon: Shield,
+    subtitle: 'Addl. Commissioner of Police',
+  },
+  dcp: {
+    gradient: 'linear-gradient(135deg, #134e4a 0%, #0d9488 40%, #0f766e 100%)',
+    accentColor: 'bg-teal-300/20 border-teal-300/40',
+    textAccent: 'text-teal-300',
+    borderAccent: 'border-teal-300/20',
+    icon: BadgeCheck,
+    subtitle: 'Deputy Commissioner of Police',
+  },
+  acp: {
+    gradient: 'linear-gradient(135deg, #312e81 0%, #4338ca 40%, #3730a3 100%)',
+    accentColor: 'bg-indigo-300/20 border-indigo-300/40',
+    textAccent: 'text-indigo-300',
+    borderAccent: 'border-indigo-300/20',
+    icon: BadgeCheck,
+    subtitle: 'Assistant Commissioner of Police',
+  },
+  si: {
+    gradient: 'linear-gradient(135deg, #1e293b 0%, #334155 40%, #1e293b 100%)',
+    accentColor: 'bg-slate-300/20 border-slate-300/40',
+    textAccent: 'text-slate-300',
+    borderAccent: 'border-slate-300/20',
+    icon: Shield,
+    subtitle: 'Sub-Inspector · Delhi Police',
+  },
+  user: {
+    gradient: 'linear-gradient(135deg, #27272a 0%, #3f3f46 40%, #18181b 100%)',
+    accentColor: 'bg-zinc-300/20 border-zinc-300/40',
+    textAccent: 'text-zinc-300',
+    borderAccent: 'border-zinc-300/20',
+    icon: UserIcon,
+    subtitle: 'Police Officer · Delhi Police',
+  },
+};
+
+function OfficerHeroBanner({ name, role }: { name: string; role: OfficerRank }) {
+  const cfg = RANK_BANNER[role];
+  const Icon = cfg.icon;
+  const rankLabel = getRankLabel(role);
+
+  return (
+    <div className="relative overflow-hidden rounded-2xl mb-6" style={{ background: cfg.gradient }}>
+      {/* Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id={`rankGrid-${role}`} x="0" y="0" width="36" height="36" patternUnits="userSpaceOnUse">
+              <polygon points="18,2 34,10 34,26 18,34 2,26 2,10" fill="none" stroke="#ffffff" strokeWidth="0.4" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill={`url(#rankGrid-${role})`} />
+        </svg>
+      </div>
+      <div className={cn('absolute -right-14 -top-14 w-60 h-60 rounded-full border-4', cfg.borderAccent)} />
+      <div className={cn('absolute -right-6 -top-6 w-44 h-44 rounded-full border-2', cfg.borderAccent)} />
+      <div className="absolute -left-8 -bottom-8 w-32 h-32 rounded-full border border-white/10" />
+
+      <div className="relative z-10 px-6 py-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className={cn('p-3 rounded-xl backdrop-blur-sm', cfg.accentColor)}>
+            <Icon className={cn('w-7 h-7', cfg.textAccent)} />
+          </div>
+          <div>
+            <p className={cn('text-xs font-semibold tracking-widest uppercase mb-0.5', cfg.textAccent)}>
+              {rankLabel}
+            </p>
+            <h2 className="text-white text-xl font-bold leading-tight">Welcome, {name}</h2>
+            <p className="text-white/60 text-sm mt-0.5">{cfg.subtitle}</p>
+          </div>
+        </div>
+        <div className="shrink-0">
+          <div className={cn(
+            'inline-flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-sm border bg-white/10',
+            cfg.borderAccent
+          )}>
+            <Icon className={cn('w-4 h-4', cfg.textAccent)} />
+            <span className={cn('text-sm font-bold', cfg.textAccent)}>
+              {rankLabel.split(' ')[0]}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function UserDashboard() {
   const navigate = useNavigate();
@@ -53,19 +183,17 @@ export default function UserDashboard() {
 
   const completedWithoutMOM = completed.filter((b) => b.status === 'completed' && !b.mom);
 
-  const rankBadge = isOfficerRank(currentUser?.role ?? 'user')
-    ? RANK_COLORS[currentUser!.role as OfficerRank]
-    : 'bg-gray-100 text-gray-700 border-gray-200';
+  const officerRole = isOfficerRank(currentUser?.role ?? 'user')
+    ? (currentUser!.role as OfficerRank)
+    : 'user';
 
   return (
     <div className="space-y-6">
+      <OfficerHeroBanner name={currentUser?.name ?? 'Officer'} role={officerRole} />
+
       <PageHeader
         title={`Welcome, ${currentUser?.name}`}
-        description={
-          <span className={cn('inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border', rankBadge)}>
-            {getRankLabel(currentUser?.role ?? 'user')}
-          </span>
-        }
+        description={getRankLabel(currentUser?.role ?? 'user')}
       >
         <Button onClick={() => navigate('/book')} className="gap-2 border border-neutral-500/20 text-[#535bad]">
           <Plus className="w-4 h-4" /> Book a Hall

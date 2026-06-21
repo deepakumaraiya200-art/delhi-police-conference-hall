@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
   Building2, CalendarCheck, CheckCircle2, Clock, ArrowRight,
-  TrendingUp, Activity, Users, ShieldCheck,
+  TrendingUp, Activity, ShieldCheck, Plus, BookOpen, Star,
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -21,8 +21,8 @@ import { rooms } from '@/data/rooms';
 import { users } from '@/data/users';
 import { useUpcomingBookings, useTodaysBookings, useBookings } from '@/hooks/useBookings';
 import { useRooms } from '@/hooks/useRooms';
+import { useUserStore } from '@/store/userStore';
 import type { Booking, Room } from '@/types';
-import { getRankShort, isOfficerRank, RANK_COLORS } from '@/types';
 
 const utilizationData = [
   { day: 'Mon', 'Tower I': 85, 'Tower II': 72, 'Bridge': 65 },
@@ -44,8 +44,60 @@ const bookingTrendData = [
   { date: 'Today', bookings: 11 },
 ];
 
+function AdminHeroBanner({ name }: { name: string }) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl mb-6"
+      style={{ background: 'linear-gradient(135deg, #0f2344 0%, #1a3a6b 50%, #0f2344 100%)' }}>
+      {/* Decorative pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="adminGrid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+              <circle cx="20" cy="20" r="1" fill="#c9a84c" />
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" strokeWidth="0.3" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#adminGrid)" />
+        </svg>
+      </div>
+      {/* Gold ring decoration */}
+      <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full border-4 border-[#c9a84c]/20" />
+      <div className="absolute -right-8 -top-8 w-48 h-48 rounded-full border-2 border-[#c9a84c]/10" />
+      <div className="absolute -left-10 -bottom-10 w-40 h-40 rounded-full border border-white/10" />
+
+      <div className="relative z-10 px-6 py-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="p-3 rounded-xl bg-[#c9a84c]/20 border border-[#c9a84c]/40 backdrop-blur-sm">
+            <Star className="w-7 h-7 text-[#c9a84c]" fill="currentColor" />
+          </div>
+          <div>
+            <p className="text-[#c9a84c] text-xs font-semibold tracking-widest uppercase mb-0.5">Delhi Police · PHQ</p>
+            <h2 className="text-white text-xl font-bold leading-tight">Welcome, {name}</h2>
+            <p className="text-blue-200/70 text-sm mt-0.5">System Administrator · Full Command Access</p>
+          </div>
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          <div className="flex flex-col items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-2.5 min-w-[70px]">
+            <span className="text-[#c9a84c] font-bold text-lg leading-none">14</span>
+            <span className="text-white/60 text-[10px] mt-0.5">Halls</span>
+          </div>
+          <div className="flex flex-col items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-2.5 min-w-[70px]">
+            <span className="text-emerald-300 font-bold text-lg leading-none">3</span>
+            <span className="text-white/60 text-[10px] mt-0.5">Towers</span>
+          </div>
+          <div className="flex flex-col items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-2.5 min-w-[70px]">
+            <span className="text-sky-300 font-bold text-lg leading-none">2</span>
+            <span className="text-white/60 text-[10px] mt-0.5">Caretakers</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const { currentUser } = useUserStore();
   const { data: upcomingBookings, isLoading: upcomingLoading } = useUpcomingBookings();
   const { data: todaysBookings, isLoading: todaysLoading } = useTodaysBookings();
   const { data: allBookings } = useBookings();
@@ -82,11 +134,17 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
+      <AdminHeroBanner name={currentUser?.name ?? 'Admin'} />
+
       <PageHeader title="Admin Dashboard" description="Complete overview of all conference hall activity">
-        <Button onClick={() => navigate('/admin/bookings')} className="gap-2 border border-neutral-500/20 text-[#535bad]">
-          <CalendarCheck className="w-4 h-4" />
-          Manage All Bookings
-        </Button>
+        <div className="flex gap-2 flex-wrap">
+          <Button onClick={() => navigate('/book')} size="sm" className="gap-2 bg-[#535bad] hover:bg-[#464fa0] text-white">
+            <Plus className="w-4 h-4" /> Book a Hall
+          </Button>
+          <Button onClick={() => navigate('/admin/bookings')} size="sm" variant="outline" className="gap-2 border-neutral-300 text-[#535bad]">
+            <BookOpen className="w-4 h-4" /> Manage Bookings
+          </Button>
+        </div>
       </PageHeader>
 
       {/* Stats */}

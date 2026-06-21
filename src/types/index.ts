@@ -76,6 +76,8 @@ export function getRankNumber(role: UserRole): number {
 }
 
 export function isSeniorTo(rankA: UserRole, rankB: UserRole): boolean {
+  if (rankA === 'admin') return true;   // admin outranks everyone
+  if (rankB === 'admin') return false;
   return getRankNumber(rankA) < getRankNumber(rankB);
 }
 

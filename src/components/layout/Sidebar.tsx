@@ -25,6 +25,8 @@ import { getRankShort } from '@/types';
 const ADMIN_NAV = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { path: '/admin/bookings', label: 'All Bookings', icon: BookOpen },
+  { path: '/book', label: 'Book a Hall', icon: Plus },
+  { path: '/my-bookings', label: 'My Bookings', icon: ClipboardList },
   { path: '/rooms', label: 'Rooms', icon: DoorOpen },
   { path: '/calendar', label: 'Calendar', icon: Calendar },
   { path: '/live', label: 'Live Status', icon: Radio, dot: true },

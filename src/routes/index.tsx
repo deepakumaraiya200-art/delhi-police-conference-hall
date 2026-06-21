@@ -75,11 +75,11 @@ const router = createBrowserRouter([
         ),
       },
 
-      // ── Officer-only routes ──────────────────────────────────────────────
+      // ── Officer + Admin routes ───────────────────────────────────────────
       {
         path: 'book',
         element: (
-          <AuthGuard allowedRoles={[...OFFICER_ROLES]}>
+          <AuthGuard allowedRoles={['admin', ...OFFICER_ROLES]}>
             <Wrap><Booking /></Wrap>
           </AuthGuard>
         ),
@@ -87,7 +87,7 @@ const router = createBrowserRouter([
       {
         path: 'my-bookings',
         element: (
-          <AuthGuard allowedRoles={[...OFFICER_ROLES]}>
+          <AuthGuard allowedRoles={['admin', ...OFFICER_ROLES]}>
             <Wrap><MyBookings /></Wrap>
           </AuthGuard>
         ),

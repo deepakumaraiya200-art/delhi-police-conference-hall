@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EmptyState } from '@/components/common/EmptyState';
 import { BookingModal } from '@/components/booking/BookingModal';
 import {
-  Calendar, CheckCircle2, Clock, MapPin, Users, Building2, CalendarCheck,
+  Calendar, CheckCircle2, Clock, MapPin, Users, Building2, CalendarCheck, Home,
 } from 'lucide-react';
 import { useBookings } from '@/hooks/useBookings';
 import { useUserStore } from '@/store/userStore';
@@ -66,6 +66,47 @@ function RoomMeetingCard({ booking, room, onView }: { booking: Booking; room?: R
   );
 }
 
+function CaretakerHeroBanner({ name, roomCount }: { name: string; roomCount: number }) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl mb-6"
+      style={{ background: 'linear-gradient(135deg, #064e3b 0%, #065f46 45%, #047857 100%)' }}>
+      <div className="absolute inset-0 opacity-10">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="ctGrid" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+              <rect x="14" y="14" width="4" height="4" rx="1" fill="#6ee7b7" />
+              <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" strokeWidth="0.3" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#ctGrid)" />
+        </svg>
+      </div>
+      <div className="absolute -right-12 -top-12 w-56 h-56 rounded-full border-4 border-emerald-300/20" />
+      <div className="absolute -right-4 -top-4 w-40 h-40 rounded-full border-2 border-emerald-200/10" />
+      <div className="absolute -left-8 -bottom-8 w-36 h-36 rounded-full border border-white/10" />
+
+      <div className="relative z-10 px-6 py-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="p-3 rounded-xl bg-emerald-300/20 border border-emerald-300/40 backdrop-blur-sm">
+            <Home className="w-7 h-7 text-emerald-300" />
+          </div>
+          <div>
+            <p className="text-emerald-300 text-xs font-semibold tracking-widest uppercase mb-0.5">Facilities Management</p>
+            <h2 className="text-white text-xl font-bold leading-tight">Welcome, {name}</h2>
+            <p className="text-emerald-100/70 text-sm mt-0.5">Room Caretaker · Delhi Police PHQ</p>
+          </div>
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          <div className="flex flex-col items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-2.5 min-w-[70px]">
+            <span className="text-emerald-300 font-bold text-lg leading-none">{roomCount}</span>
+            <span className="text-white/60 text-[10px] mt-0.5">My Rooms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function CaretakerDashboard() {
   const { currentUser } = useUserStore();
   const { data: allBookings, isLoading } = useBookings();
@@ -107,8 +148,9 @@ export default function CaretakerDashboard() {
 
   return (
     <div className="space-y-6">
+      <CaretakerHeroBanner name={currentUser?.name ?? 'Caretaker'} roomCount={myRooms.length} />
       <PageHeader
-        title={`Welcome, ${currentUser?.name}`}
+        title="Caretaker Portal"
         description={`Managing ${myRooms.length} conference halls — see upcoming meetings and room status`}
       />
 
