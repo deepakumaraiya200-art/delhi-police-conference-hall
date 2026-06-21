@@ -8,10 +8,11 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, Clock, MapPin, Users, User, FileText } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, User, FileText, XCircle, ShieldAlert } from 'lucide-react';
 import { format } from 'date-fns';
 import { formatTime } from '@/lib/utils';
 import type { Booking, Room } from '@/types';
+import { cn } from '@/lib/utils';
 
 interface BookingModalProps {
   booking: Booking | null;
@@ -73,6 +74,49 @@ export function BookingModal({ booking, room, open, onOpenChange }: BookingModal
               <FileText className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
               <span>{booking.description}</span>
             </div>
+          )}
+
+          {/* Override info */}
+          {booking.overriddenBy && (
+            <div className="flex items-start gap-3 rounded-lg bg-orange-50 border border-orange-200 px-3 py-2 text-sm">
+              <ShieldAlert className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-orange-800 text-xs">Booking overridden</p>
+                <p className="text-orange-700 text-xs mt-0.5">This booking was cancelled by a senior officer (ID: {booking.overriddenBy}).</p>
+              </div>
+            </div>
+          )}
+
+          {/* Cancel reason */}
+          {booking.status === 'cancelled' && booking.cancelReason && (
+            <div className="flex items-start gap-3 rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-sm">
+              <XCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-red-800 text-xs">Cancellation reason</p>
+                <p className="text-red-700 text-xs mt-0.5">{booking.cancelReason}</p>
+              </div>
+            </div>
+          )}
+
+          {/* MOM section */}
+          {booking.status === 'completed' && (
+            <>
+              <Separator />
+              <div className={cn(
+                'rounded-lg border px-3 py-2.5 space-y-1',
+                booking.mom ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'
+              )}>
+                <div className="flex items-center gap-2">
+                  <FileText className={cn('w-4 h-4', booking.mom ? 'text-emerald-600' : 'text-amber-600')} />
+                  <p className={cn('text-xs font-semibold', booking.mom ? 'text-emerald-800' : 'text-amber-800')}>
+                    {booking.mom ? 'Minutes of Meeting' : 'Minutes of Meeting not submitted'}
+                  </p>
+                </div>
+                {booking.mom && (
+                  <p className="text-xs text-emerald-700 leading-relaxed whitespace-pre-wrap pl-6">{booking.mom}</p>
+                )}
+              </div>
+            </>
           )}
         </div>
       </DialogContent>

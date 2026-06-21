@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Bell, Sun, Moon, Menu, X } from 'lucide-react';
+import { Bell, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,9 +23,10 @@ import { useNotificationStore } from '@/store/notificationStore';
 import { useUserStore } from '@/store/userStore';
 import { cn, getInitials } from '@/lib/utils';
 import { format } from 'date-fns';
-import { MdOutlineNightlight } from "react-icons/md";
-import { GoSun } from "react-icons/go";
-import { IoMdNotificationsOutline } from "react-icons/io";
+import { MdOutlineNightlight } from 'react-icons/md';
+import { GoSun } from 'react-icons/go';
+import { IoMdNotificationsOutline } from 'react-icons/io';
+import { getRankLabel, getRankShort, RANK_COLORS, isOfficerRank, type OfficerRank } from '@/types';
 
 interface NavbarProps {
   onMenuToggle: () => void;
@@ -37,12 +38,28 @@ export function Navbar({ onMenuToggle, sidebarCollapsed }: NavbarProps) {
   const [darkMode, setDarkMode] = useState(false);
   const { notifications, markAsRead, markAllAsRead } = useNotificationStore();
   const { currentUser, logout } = useUserStore();
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     document.documentElement.classList.toggle('dark');
   };
+
+  const rankBadgeClass =
+    currentUser?.role === 'admin'
+      ? 'bg-red-100 text-red-800 border-red-200'
+      : currentUser?.role === 'caretaker'
+      ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+      : isOfficerRank(currentUser?.role ?? 'user')
+      ? RANK_COLORS[currentUser!.role as OfficerRank]
+      : 'bg-gray-100 text-gray-700 border-gray-200';
+
+  const rankLabel =
+    currentUser?.role === 'admin'
+      ? 'Admin'
+      : currentUser?.role === 'caretaker'
+      ? 'Caretaker'
+      : getRankShort(currentUser?.role ?? 'user');
 
   return (
     <header
@@ -53,30 +70,33 @@ export function Navbar({ onMenuToggle, sidebarCollapsed }: NavbarProps) {
       )}
     >
       <div className="flex items-center justify-between h-full px-4 lg:px-6">
-        {/* Mobile menu button and search */}
         <div className="flex items-center gap-3 flex-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={onMenuToggle}
-          >
+          <Button variant="ghost" size="icon" className="lg:hidden" onClick={onMenuToggle}>
             <Menu className="h-5 w-5" />
           </Button>
           <div className="relative max-w-md w-full hidden sm:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search rooms, bookings..."
-              className="pl-9 bg-neutral-400/5  border border-neutral-500/20  rounded-2xl "
+              className="pl-9 bg-neutral-400/5 border border-neutral-500/20 rounded-2xl"
             />
           </div>
         </div>
 
-        {/* Right section */}
-        <div className="flex items-center ">
-          {/* Dark Mode Toggle */}
+        <div className="flex items-center gap-1">
+          {/* Rank badge */}
+          {currentUser && (
+            <span className={cn(
+              'hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border mr-2',
+              rankBadgeClass
+            )}>
+              {rankLabel}
+            </span>
+          )}
+
+          {/* Dark mode */}
           <Button variant="ghost" onClick={toggleDarkMode} className="rounded-full">
-            {darkMode ? <GoSun className="h-4 w-4" /> : <MdOutlineNightlight className="h-15 w-15" />}
+            {darkMode ? <GoSun className="h-4 w-4" /> : <MdOutlineNightlight className="h-4 w-4" />}
           </Button>
 
           {/* Notifications */}
@@ -95,12 +115,7 @@ export function Navbar({ onMenuToggle, sidebarCollapsed }: NavbarProps) {
               <div className="flex items-center justify-between p-4 border-b">
                 <h4 className="font-semibold text-sm">Notifications</h4>
                 {unreadCount > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-xs h-auto py-1"
-                    onClick={() => markAllAsRead()}
-                  >
+                  <Button variant="ghost" size="sm" className="text-xs h-auto py-1" onClick={() => markAllAsRead()}>
                     Mark all read
                   </Button>
                 )}
@@ -139,7 +154,7 @@ export function Navbar({ onMenuToggle, sidebarCollapsed }: NavbarProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                 <Avatar className="h-9 w-9">
-                  <AvatarImage src='https://ik.imagekit.io/qwzhnpeqg/delhi%20police/Screenshot_2026-06-10_194556-removebg-preview.png?updatedAt=1781100986877' alt={currentUser?.name} />
+                  <AvatarImage src={currentUser?.avatar} alt={currentUser?.name} />
                   <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
                     {currentUser ? getInitials(currentUser.name) : 'U'}
                   </AvatarFallback>
@@ -151,13 +166,18 @@ export function Navbar({ onMenuToggle, sidebarCollapsed }: NavbarProps) {
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">{currentUser?.name}</p>
                   <p className="text-xs leading-none text-muted-foreground">{currentUser?.email}</p>
+                  <p className="text-xs text-muted-foreground">{currentUser?.department}</p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate('/settings')}>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive" onClick={() => { logout(); navigate('/login'); }}>Log out</DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={() => { logout(); navigate('/login'); }}
+              >
+                Log out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

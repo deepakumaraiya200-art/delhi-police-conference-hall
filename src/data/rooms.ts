@@ -1,16 +1,21 @@
 import type { Room } from '@/types';
 
+// caretakerId assignments:
+// u-ct1 → rooms 1–7 (Tower I)
+// u-ct2 → rooms 8–14 (Tower I upper + Bridge Tower + Tower II)
+
 export const rooms: Room[] = [
   // ── Tower I ─────────────────────────────────────────────────────────────
   {
     id: 'room-1',
-    imgsrc: "https://ik.imagekit.io/qwzhnpeqg/0e163374-1f3b-46e4-b428-e10762fb7391.jpg",
+    imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/0e163374-1f3b-46e4-b428-e10762fb7391.jpg',
     name: 'Adarsh Auditorium',
     roomNumber: 'GF-AUD',
     tower: 'Tower I',
     floor: 'Ground Floor',
     capacity: { min: 400, max: 430 },
     managedBy: 'Managed By - Reception',
+    caretakerId: 'u-ct1',
     type: 'Auditorium',
     status: 'available',
     amenities: ['Projector', 'Microphone', 'AC', 'Stage', 'Sound System', 'Video Conferencing', 'Podium', 'WiFi'],
@@ -26,6 +31,7 @@ export const rooms: Room[] = [
     floor: 'Ground Floor',
     capacity: { min: 70, max: 90 },
     managedBy: 'Managed By - Media Cell',
+    caretakerId: 'u-ct1',
     type: 'Conference Hall',
     status: 'reserved',
     amenities: ['Projector', 'Microphone', 'AC', 'Video Conferencing', 'WiFi', 'Press Podium', 'Recording Equipment'],
@@ -35,13 +41,13 @@ export const rooms: Room[] = [
   {
     id: 'room-3',
     imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_107-3.jpeg',
-
     name: 'Room 107',
     roomNumber: '107',
     tower: 'Tower I',
     floor: '1st Floor',
     capacity: { min: 20, max: 30 },
     managedBy: 'Managed By - HRD',
+    caretakerId: 'u-ct1',
     type: 'Conference Hall',
     status: 'available',
     amenities: ['Projector', 'Whiteboard', 'AC', 'WiFi', 'Video Conferencing'],
@@ -51,13 +57,13 @@ export const rooms: Room[] = [
   {
     id: 'room-4',
     imgsrc: 'https://ik.imagekit.io/gv06viaup/images/vimarsh-2.jpeg',
-
     name: 'Room 203',
     roomNumber: '203',
     tower: 'Tower I',
     floor: '2nd Floor',
     capacity: { min: 50, max: 80 },
     managedBy: 'Managed By - DCP/GA',
+    caretakerId: 'u-ct1',
     type: 'Mini Auditorium',
     status: 'occupied',
     amenities: ['Projector', 'Microphone', 'AC', 'Video Conferencing', 'WiFi', 'Sound System', 'Whiteboard'],
@@ -67,13 +73,13 @@ export const rooms: Room[] = [
   {
     id: 'room-5',
     imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_307-2.jpeg',
-
     name: 'Room 307',
     roomNumber: '307',
     tower: 'Tower I',
     floor: '3rd Floor',
     capacity: { min: 25, max: 40 },
     managedBy: 'Managed By - Traffic',
+    caretakerId: 'u-ct1',
     type: 'Conference Hall',
     status: 'available',
     amenities: ['Projector', 'Whiteboard', 'AC', 'WiFi', 'Video Conferencing', 'Microphone'],
@@ -83,13 +89,13 @@ export const rooms: Room[] = [
   {
     id: 'room-6',
     imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/edb5c3bb-f554-427c-8ab2-144fd7d025c6.jpg',
-
     name: 'Room 420',
     roomNumber: '420',
     tower: 'Tower I',
     floor: '4th Floor',
     capacity: { min: 15, max: 45 },
     managedBy: 'Managed By - IT Center',
+    caretakerId: 'u-ct1',
     type: 'Conference Hall',
     status: 'available',
     amenities: ['Projector', 'Whiteboard', 'AC', 'WiFi', 'Video Conferencing', 'Microphone', 'Smart TV', 'HDMI Ports'],
@@ -99,13 +105,13 @@ export const rooms: Room[] = [
   {
     id: 'room-7',
     imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_1305-2.jpeg',
-
     name: 'Room 1305',
     roomNumber: '1305',
     tower: 'Tower I',
     floor: '13th Floor',
     capacity: { min: 18, max: 30 },
     managedBy: 'Managed By - DPHCL',
+    caretakerId: 'u-ct1',
     type: 'Conference Hall',
     status: 'reserved',
     amenities: ['Projector', 'Whiteboard', 'AC', 'WiFi', 'Video Conferencing'],
@@ -115,13 +121,13 @@ export const rooms: Room[] = [
   {
     id: 'room-8',
     imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_1400-3.jpeg',
-
     name: 'Room 1400',
     roomNumber: '1400',
     tower: 'Tower I',
     floor: '14th Floor',
     capacity: { min: 14, max: 25 },
     managedBy: 'Managed By - PRO',
+    caretakerId: 'u-ct2',
     type: 'Conference Hall',
     status: 'available',
     amenities: ['Projector', 'Whiteboard', 'AC', 'WiFi', 'Microphone'],
@@ -131,13 +137,13 @@ export const rooms: Room[] = [
   {
     id: 'room-9',
     imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/cb632f16-8b4d-403b-978f-c00b6c60a690.jpg',
-
     name: 'Conference Hall 17th Floor',
     roomNumber: '1700',
     tower: 'Tower I',
     floor: '17th Floor',
     capacity: { min: 30, max: 45 },
     managedBy: 'Managed By - CP Secretariat',
+    caretakerId: 'u-ct2',
     type: 'Conference Hall',
     status: 'occupied',
     amenities: ['Projector', 'Microphone', 'AC', 'WiFi', 'Video Conferencing', 'Sound System', 'Smart TV'],
@@ -149,13 +155,13 @@ export const rooms: Room[] = [
   {
     id: 'room-10',
     imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_1429-2.jpeg',
-
     name: 'Room 1429',
     roomNumber: '1429',
     tower: 'Bridge Tower',
     floor: '14th Floor',
     capacity: { min: 18, max: 30 },
     managedBy: 'Managed By - Traffic',
+    caretakerId: 'u-ct2',
     type: 'Conference Hall',
     status: 'available',
     amenities: ['Projector', 'Whiteboard', 'AC', 'WiFi', 'Video Conferencing', 'Microphone'],
@@ -167,13 +173,13 @@ export const rooms: Room[] = [
   {
     id: 'room-11',
     imgsrc: 'https://ik.imagekit.io/qwzhnpeqg/5b04c1ee-b2c2-42d3-871f-e4d2658bc69d.jpg',
-
     name: 'Room 124',
     roomNumber: '124',
     tower: 'Tower II',
     floor: '1st Floor',
     capacity: { min: 25, max: 40 },
     managedBy: 'Managed By - Reception',
+    caretakerId: 'u-ct2',
     type: 'Conference Hall',
     status: 'available',
     amenities: ['Projector', 'Whiteboard', 'AC', 'WiFi', 'Video Conferencing', 'Microphone'],
@@ -182,14 +188,14 @@ export const rooms: Room[] = [
   },
   {
     id: 'room-12',
-    imgsrc: "https://ik.imagekit.io/gv06viaup/images/room_216-3.jpeg",
-
+    imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_216-3.jpeg',
     name: 'Room 216',
     roomNumber: '216',
     tower: 'Tower II',
     floor: '2nd Floor',
     capacity: { min: 25, max: 40 },
     managedBy: 'Managed By - L&O Zone-1',
+    caretakerId: 'u-ct2',
     type: 'Conference Hall',
     status: 'reserved',
     amenities: ['Projector', 'Whiteboard', 'AC', 'WiFi', 'Video Conferencing', 'Microphone'],
@@ -199,13 +205,13 @@ export const rooms: Room[] = [
   {
     id: 'room-13',
     imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_326-2.jpeg',
-
     name: 'Room 326',
     roomNumber: '326',
     tower: 'Tower II',
     floor: '3rd Floor',
     capacity: { min: 30, max: 50 },
     managedBy: 'Managed By - Reception',
+    caretakerId: 'u-ct2',
     type: 'Conference Hall',
     status: 'available',
     amenities: ['Projector', 'Whiteboard', 'AC', 'WiFi', 'Video Conferencing', 'Microphone', 'Sound System'],
@@ -215,13 +221,13 @@ export const rooms: Room[] = [
   {
     id: 'room-14',
     imgsrc: 'https://ik.imagekit.io/gv06viaup/images/room_727-4.jpeg',
-
     name: 'Room 727',
     roomNumber: '727',
     tower: 'Tower II',
     floor: '7th Floor',
     capacity: { min: 30, max: 60 },
     managedBy: 'Managed By - Special Cell',
+    caretakerId: 'u-ct2',
     type: 'Conference Hall',
     status: 'occupied',
     amenities: ['Projector', 'Microphone', 'AC', 'WiFi', 'Video Conferencing', 'Sound System', 'Whiteboard', 'Smart TV'],

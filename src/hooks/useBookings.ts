@@ -8,7 +8,9 @@ import {
   getTodaysBookings,
   getUpcomingBookings,
   createBooking,
+  updateBooking,
   cancelBooking,
+  submitMOM,
 } from '@/services/bookingService';
 import { useBookingStore } from '@/store/bookingStore';
 
@@ -33,9 +35,7 @@ export function useBooking(id: string) {
     queryKey: ['booking', id],
     queryFn: async () => {
       const data = await getBookingById(id);
-      if (data) {
-        setSelectedBooking(data);
-      }
+      if (data) setSelectedBooking(data);
       return data;
     },
     enabled: !!id,
@@ -80,11 +80,27 @@ export function useUpcomingBookings() {
 export function useCreateBooking() {
   const queryClient = useQueryClient();
   const addBooking = useBookingStore((state) => state.addBooking);
+  const updateBookingStore = useBookingStore((state) => state.updateBooking);
 
   return useMutation({
     mutationFn: (data: Omit<Booking, 'id' | 'createdAt'>) => createBooking(data),
-    onSuccess: (newBooking) => {
-      addBooking(newBooking);
+    onSuccess: ({ booking, cancelledBookings }) => {
+      addBooking(booking);
+      cancelledBookings.forEach((b) => updateBookingStore(b.id, { status: 'cancelled', cancelReason: b.cancelReason }));
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    },
+  });
+}
+
+export function useUpdateBooking() {
+  const queryClient = useQueryClient();
+  const updateBookingStore = useBookingStore((state) => state.updateBooking);
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<Booking> }) =>
+      updateBooking(id, data),
+    onSuccess: (updated) => {
+      updateBookingStore(updated.id, updated);
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
     },
   });
@@ -92,12 +108,26 @@ export function useCreateBooking() {
 
 export function useCancelBooking() {
   const queryClient = useQueryClient();
-  const updateBooking = useBookingStore((state) => state.updateBooking);
+  const updateBookingStore = useBookingStore((state) => state.updateBooking);
 
   return useMutation({
-    mutationFn: (id: string) => cancelBooking(id),
-    onSuccess: (cancelledBooking) => {
-      updateBooking(cancelledBooking.id, { status: 'cancelled' });
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) =>
+      cancelBooking(id, reason),
+    onSuccess: (cancelled) => {
+      updateBookingStore(cancelled.id, { status: 'cancelled' });
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    },
+  });
+}
+
+export function useSubmitMOM() {
+  const queryClient = useQueryClient();
+  const updateBookingStore = useBookingStore((state) => state.updateBooking);
+
+  return useMutation({
+    mutationFn: ({ id, mom }: { id: string; mom: string }) => submitMOM(id, mom),
+    onSuccess: (updated) => {
+      updateBookingStore(updated.id, { mom: updated.mom });
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
     },
   });

@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User } from '@/types';
+import type { User, LoginType } from '@/types';
 import { users } from '@/data/users';
 
 interface UserState {
   currentUser: User | null;
   isAuthenticated: boolean;
   setUser: (user: User) => void;
-  login: (email: string, password: string) => { success: boolean; error?: string };
+  login: (email: string, password: string, loginType: LoginType) => { success: boolean; error?: string };
   logout: () => void;
 }
 
@@ -17,25 +17,30 @@ export const useUserStore = create<UserState>()(
       currentUser: null,
       isAuthenticated: false,
       setUser: (user) => set({ currentUser: user, isAuthenticated: true }),
-      login: (email: string, _password: string) => {
-        // Mock authentication - find user by email
+
+      login: (email: string, password: string, loginType: LoginType) => {
         const user = users.find(
-          (u) => u.email.toLowerCase() === email.toLowerCase()
+          (u) =>
+            u.email.toLowerCase() === email.toLowerCase() &&
+            u.password === password &&
+            u.loginType === loginType
         );
-        if (user) {
-          set({ currentUser: user, isAuthenticated: true });
-          return { success: true };
+
+        if (!user) {
+          const emailMatch = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+          if (emailMatch && emailMatch.loginType !== loginType) {
+            return {
+              success: false,
+              error: `This account must log in via the "${emailMatch.loginType === 'admin' ? 'Admin' : emailMatch.loginType === 'caretaker' ? 'Caretaker' : 'Officer'}" portal.`,
+            };
+          }
+          return { success: false, error: 'Invalid email or password.' };
         }
-        // Also allow login with just a name match for demo
-        const userByName = users.find(
-          (u) => u.name.toLowerCase().includes(email.toLowerCase())
-        );
-        if (userByName) {
-          set({ currentUser: userByName, isAuthenticated: true });
-          return { success: true };
-        }
-        return { success: false, error: 'Invalid credentials. Try any email from @delhipolice.gov.in' };
+
+        set({ currentUser: user, isAuthenticated: true });
+        return { success: true };
       },
+
       logout: () => set({ currentUser: null, isAuthenticated: false }),
     }),
     {
