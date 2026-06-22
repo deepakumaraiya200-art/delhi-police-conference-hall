@@ -139,9 +139,15 @@ router.post('/', async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    // Fetch room name once — used in all notifications
-    const roomRow = (await db.query('SELECT name FROM rooms WHERE id=$1', [roomId])).rows[0];
+    // Fetch room info once — used in maintenance check and all notifications
+    const roomRow = (await db.query<{ name: string; status: string }>('SELECT name, status FROM rooms WHERE id=$1', [roomId])).rows[0];
     const roomName = roomRow?.name ?? roomId;
+
+    // Block booking if room is under maintenance
+    if (roomRow?.status === 'under_maintenance') {
+      res.status(409).json({ error: `"${roomName}" is currently under maintenance and cannot be booked. Contact the caretaker for availability updates.` });
+      return;
+    }
 
     // Check for conflicts & senior override
     const conflict = await findConflict(roomId, date, startTime, endTime);
@@ -215,12 +221,27 @@ router.post('/', async (req: AuthRequest, res: Response) => {
        participantsCount ?? 1, date, startTime, endTime, status ?? 'confirmed']
     );
 
-    // Confirmation notification to the booking creator (not about override — just "your booking is confirmed")
+    // Confirmation notification to the booking creator
     await db.query(
       `INSERT INTO notifications (id, user_id, type, message) VALUES ($1,$2,'booking_confirmed',$3)`,
       [`n-${uuidv4().slice(0, 8)}`, userId,
         `Your booking "${title}" in ${roomName} on ${date} (${startTime}–${endTime}) has been confirmed.`]
     );
+
+    // Notify caretaker(s) assigned to this room
+    const caretakerRows = await db.query<{ id: string }>(
+      `SELECT id FROM users WHERE $1=ANY(assigned_rooms) AND login_type='caretaker'`,
+      [roomId]
+    );
+    for (const ct of caretakerRows.rows) {
+      if (ct.id !== userId) {
+        await db.query(
+          `INSERT INTO notifications (id, user_id, type, message) VALUES ($1,$2,'booking_confirmed',$3)`,
+          [`n-${uuidv4().slice(0, 8)}`, ct.id,
+            `New booking in ${roomName}: "${title}" by ${req.user!.name} on ${date} (${startTime}–${endTime}).`]
+        );
+      }
+    }
 
     res.status(201).json({ booking: toBooking(rows[0]), cancelledBookings });
   } catch (err) {

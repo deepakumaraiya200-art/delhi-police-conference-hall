@@ -324,9 +324,16 @@ export default function Booking() {
                         </SelectTrigger>
                         <SelectContent>
                           {(rooms || []).map((room) => (
-                            <SelectItem key={room.id} value={room.id}>
+                            <SelectItem
+                              key={room.id}
+                              value={room.id}
+                              disabled={room.status === 'under_maintenance'}
+                            >
                               <span>{room.name}</span>
                               <span className="text-xs text-muted-foreground ml-2">({room.tower}, {room.capacity.min}–{room.capacity.max} pax)</span>
+                              {room.status === 'under_maintenance' && (
+                                <span className="ml-2 text-[10px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 rounded px-1">Maintenance</span>
+                              )}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -358,6 +365,19 @@ export default function Booking() {
                       )}
                     </div>
 
+                    {/* Maintenance block */}
+                    {selectedRoom?.status === 'under_maintenance' && (
+                      <div className="rounded-lg border border-slate-300 bg-slate-50 p-3 space-y-1">
+                        <p className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                          Under Maintenance — Bookings Blocked
+                        </p>
+                        <p className="text-xs text-slate-600 pl-5">
+                          This hall is currently under maintenance. Contact the caretaker for availability.
+                        </p>
+                      </div>
+                    )}
+
                     {/* Conflict detail — shown when selected date/time clashes */}
                     {bufferConflictBooking && (
                       <div className="rounded-lg border border-red-200 bg-red-50 p-3 space-y-1">
@@ -382,7 +402,7 @@ export default function Booking() {
 
             {/* Mobile submit */}
             <div className="lg:hidden">
-              <Button type="submit" size="lg" className="w-full gap-2" disabled={createBookingMutation.isPending || !!bufferError || blockedOverrides.length > 0}>
+              <Button type="submit" size="lg" className="w-full gap-2" disabled={createBookingMutation.isPending || !!bufferError || blockedOverrides.length > 0 || selectedRoom?.status === 'under_maintenance'}>
                 {createBookingMutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" />Creating...</> : <><Send className="w-4 h-4" />Confirm Booking</>}
               </Button>
             </div>
@@ -446,7 +466,7 @@ export default function Booking() {
                   type="submit"
                   size="lg"
                   className="w-full gap-2 hidden lg:flex"
-                  disabled={createBookingMutation.isPending || !!bufferError || blockedOverrides.length > 0}
+                  disabled={createBookingMutation.isPending || !!bufferError || blockedOverrides.length > 0 || selectedRoom?.status === 'under_maintenance'}
                 >
                   {createBookingMutation.isPending ? <><Loader2 className="w-4 h-4 animate-spin" />Creating...</> : <><Send className="w-4 h-4" />Confirm Booking</>}
                 </Button>
