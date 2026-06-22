@@ -323,8 +323,8 @@ export default function AdminDashboard() {
               </div>
               <Separator />
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Pending</span>
-                <Badge variant="warning">{todaysBookings?.filter((b) => b.status === 'pending').length ?? 0}</Badge>
+                <span className="text-muted-foreground">Reserved</span>
+                <Badge variant="warning">{todaysBookings?.filter((b) => b.status === 'reserved').length ?? 0}</Badge>
               </div>
               <Separator />
               <div className="flex items-center justify-between text-sm">

@@ -17,14 +17,16 @@ import type { Booking } from '@/types';
 
 const statusColors: Record<Booking['status'], string> = {
   confirmed: '#4f46e5',
-  pending: '#f59e0b',
+  ongoing:   '#3b82f6',
+  reserved:  '#f59e0b',
   cancelled: '#9ca3af',
   completed: '#10b981',
 };
 
 const statusLabels: { status: Booking['status']; color: string; label: string }[] = [
   { status: 'confirmed', color: '#4f46e5', label: 'Confirmed' },
-  { status: 'pending', color: '#f59e0b', label: 'Pending' },
+  { status: 'ongoing',   color: '#3b82f6', label: 'Ongoing' },
+  { status: 'reserved',  color: '#f59e0b', label: 'Reserved' },
   { status: 'completed', color: '#10b981', label: 'Completed' },
   { status: 'cancelled', color: '#9ca3af', label: 'Cancelled' },
 ];

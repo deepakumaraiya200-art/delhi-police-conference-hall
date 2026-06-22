@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useNotificationStore } from '@/store/notificationStore';
+import { useNotifications, useMarkNotificationRead, useMarkAllNotificationsRead } from '@/hooks/useNotifications';
 import { useUserStore } from '@/store/userStore';
 import { cn, getInitials } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -36,8 +37,11 @@ interface NavbarProps {
 export function Navbar({ onMenuToggle, sidebarCollapsed }: NavbarProps) {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
-  const { notifications, markAsRead, markAllAsRead } = useNotificationStore();
+  const { notifications } = useNotificationStore();
   const { currentUser, logout } = useUserStore();
+  useNotifications();
+  const markReadMutation = useMarkNotificationRead();
+  const markAllReadMutation = useMarkAllNotificationsRead();
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const toggleDarkMode = () => {
@@ -115,7 +119,7 @@ export function Navbar({ onMenuToggle, sidebarCollapsed }: NavbarProps) {
               <div className="flex items-center justify-between p-4 border-b">
                 <h4 className="font-semibold text-sm">Notifications</h4>
                 {unreadCount > 0 && (
-                  <Button variant="ghost" size="sm" className="text-xs h-auto py-1" onClick={() => markAllAsRead()}>
+                  <Button variant="ghost" size="sm" className="text-xs h-auto py-1" onClick={() => markAllReadMutation.mutate()}>
                     Mark all read
                   </Button>
                 )}
@@ -135,7 +139,7 @@ export function Navbar({ onMenuToggle, sidebarCollapsed }: NavbarProps) {
                           'p-3 cursor-pointer hover:bg-muted/50 transition-colors',
                           !notif.read && 'bg-primary/5'
                         )}
-                        onClick={() => markAsRead(notif.id)}
+                        onClick={() => markReadMutation.mutate(notif.id)}
                       >
                         <p className="text-sm">{notif.message}</p>
                         <p className="text-xs text-muted-foreground mt-1">

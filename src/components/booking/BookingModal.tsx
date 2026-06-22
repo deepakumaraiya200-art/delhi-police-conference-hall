@@ -8,11 +8,10 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, Clock, MapPin, Users, User, FileText, XCircle, ShieldAlert } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, User, FileText, XCircle, ShieldAlert, Radio } from 'lucide-react';
 import { format } from 'date-fns';
 import { formatTime } from '@/lib/utils';
 import type { Booking, Room } from '@/types';
-import { cn } from '@/lib/utils';
 
 interface BookingModalProps {
   booking: Booking | null;
@@ -21,25 +20,31 @@ interface BookingModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const STATUS_CONFIG: Record<string, { label: string; variant: 'success' | 'warning' | 'destructive' | 'secondary' | 'default' }> = {
+  confirmed: { label: 'Confirmed', variant: 'success' },
+  ongoing:   { label: 'Ongoing',   variant: 'default' },
+  reserved:  { label: 'Reserved',  variant: 'warning' },
+  cancelled: { label: 'Cancelled', variant: 'destructive' },
+  completed: { label: 'Completed', variant: 'secondary' },
+};
+
 export function BookingModal({ booking, room, open, onOpenChange }: BookingModalProps) {
   if (!booking) return null;
 
-  const statusConfig = {
-    confirmed: { label: 'Confirmed', variant: 'success' as const },
-    pending: { label: 'Pending', variant: 'warning' as const },
-    cancelled: { label: 'Cancelled', variant: 'destructive' as const },
-    completed: { label: 'Completed', variant: 'secondary' as const },
-  };
-
-  const { label, variant } = statusConfig[booking.status];
+  const { label, variant } = STATUS_CONFIG[booking.status] ?? { label: booking.status, variant: 'default' as const };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <DialogTitle>{booking.title}</DialogTitle>
             <Badge variant={variant}>{label}</Badge>
+            {booking.status === 'ongoing' && (
+              <span className="flex items-center gap-1 text-[10px] text-blue-600 font-medium">
+                <Radio className="w-3 h-3 animate-pulse" /> Live
+              </span>
+            )}
           </div>
           <DialogDescription>
             {booking.description || 'No description provided.'}
@@ -53,12 +58,12 @@ export function BookingModal({ booking, room, open, onOpenChange }: BookingModal
           </div>
           <div className="flex items-center gap-3 text-sm">
             <Clock className="w-4 h-4 text-muted-foreground shrink-0" />
-            <span>{formatTime(booking.startTime)} - {formatTime(booking.endTime)}</span>
+            <span>{formatTime(booking.startTime)} – {formatTime(booking.endTime)}</span>
           </div>
           {room && (
             <div className="flex items-center gap-3 text-sm">
               <MapPin className="w-4 h-4 text-muted-foreground shrink-0" />
-              <span>{room.name} ({room.tower}, Floor {room.floor})</span>
+              <span>{room.name} ({room.tower}, {room.floor})</span>
             </div>
           )}
           <div className="flex items-center gap-3 text-sm">
@@ -81,8 +86,8 @@ export function BookingModal({ booking, room, open, onOpenChange }: BookingModal
             <div className="flex items-start gap-3 rounded-lg bg-orange-50 border border-orange-200 px-3 py-2 text-sm">
               <ShieldAlert className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-orange-800 text-xs">Booking overridden</p>
-                <p className="text-orange-700 text-xs mt-0.5">This booking was cancelled by a senior officer (ID: {booking.overriddenBy}).</p>
+                <p className="font-semibold text-orange-800 text-xs">Booking overridden by senior officer</p>
+                <p className="text-orange-700 text-xs mt-0.5">This booking was cancelled by a higher-ranked officer.</p>
               </div>
             </div>
           )}
@@ -98,25 +103,12 @@ export function BookingModal({ booking, room, open, onOpenChange }: BookingModal
             </div>
           )}
 
-          {/* MOM section */}
+          {/* Completed info */}
           {booking.status === 'completed' && (
-            <>
-              <Separator />
-              <div className={cn(
-                'rounded-lg border px-3 py-2.5 space-y-1',
-                booking.mom ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'
-              )}>
-                <div className="flex items-center gap-2">
-                  <FileText className={cn('w-4 h-4', booking.mom ? 'text-emerald-600' : 'text-amber-600')} />
-                  <p className={cn('text-xs font-semibold', booking.mom ? 'text-emerald-800' : 'text-amber-800')}>
-                    {booking.mom ? 'Minutes of Meeting' : 'Minutes of Meeting not submitted'}
-                  </p>
-                </div>
-                {booking.mom && (
-                  <p className="text-xs text-emerald-700 leading-relaxed whitespace-pre-wrap pl-6">{booking.mom}</p>
-                )}
-              </div>
-            </>
+            <div className="flex items-start gap-3 rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 text-sm">
+              <FileText className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
+              <p className="text-slate-600 text-xs">Meeting marked as completed by room caretaker.</p>
+            </div>
           )}
         </div>
       </DialogContent>

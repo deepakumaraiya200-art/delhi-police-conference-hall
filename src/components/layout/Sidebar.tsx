@@ -16,6 +16,7 @@ import {
   BarChart3,
   Radio,
   Home,
+  UserCog,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
@@ -25,6 +26,7 @@ import { getRankShort } from '@/types';
 const ADMIN_NAV = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { path: '/admin/bookings', label: 'All Bookings', icon: BookOpen },
+  { path: '/admin/users', label: 'Manage Users', icon: UserCog },
   { path: '/book', label: 'Book a Hall', icon: Plus },
   { path: '/my-bookings', label: 'My Bookings', icon: ClipboardList },
   { path: '/rooms', label: 'Rooms', icon: DoorOpen },
@@ -44,9 +46,9 @@ const CARETAKER_NAV = [
 
 const OFFICER_NAV = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-  { path: '/book', label: 'Book Hall', icon: Plus },
-  { path: '/my-bookings', label: 'My Bookings', icon: ClipboardList },
   { path: '/rooms', label: 'Browse Halls', icon: DoorOpen },
+  { path: '/my-bookings', label: 'My Bookings', icon: ClipboardList },
+  { path: '/book', label: 'Book Hall', icon: Plus },
   { path: '/calendar', label: 'Calendar', icon: Calendar },
   { path: '/live', label: 'Live Status', icon: Radio, dot: true },
   { path: '/settings', label: 'Settings', icon: Settings },

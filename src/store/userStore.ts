@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User, LoginType } from '@/types';
-import { users } from '@/data/users';
+import type { User } from '@/types';
+import { setToken, clearToken } from '@/services/api';
 
 interface UserState {
   currentUser: User | null;
   isAuthenticated: boolean;
   setUser: (user: User) => void;
-  login: (email: string, password: string, loginType: LoginType) => { success: boolean; error?: string };
+  completeLogin: (user: User, token: string) => void;
   logout: () => void;
 }
 
@@ -16,32 +16,18 @@ export const useUserStore = create<UserState>()(
     (set) => ({
       currentUser: null,
       isAuthenticated: false,
+
       setUser: (user) => set({ currentUser: user, isAuthenticated: true }),
 
-      login: (email: string, password: string, loginType: LoginType) => {
-        const user = users.find(
-          (u) =>
-            u.email.toLowerCase() === email.toLowerCase() &&
-            u.password === password &&
-            u.loginType === loginType
-        );
-
-        if (!user) {
-          const emailMatch = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
-          if (emailMatch && emailMatch.loginType !== loginType) {
-            return {
-              success: false,
-              error: `This account must log in via the "${emailMatch.loginType === 'admin' ? 'Admin' : emailMatch.loginType === 'caretaker' ? 'Caretaker' : 'Officer'}" portal.`,
-            };
-          }
-          return { success: false, error: 'Invalid email or password.' };
-        }
-
+      completeLogin: (user, token) => {
+        setToken(token);
         set({ currentUser: user, isAuthenticated: true });
-        return { success: true };
       },
 
-      logout: () => set({ currentUser: null, isAuthenticated: false }),
+      logout: () => {
+        clearToken();
+        set({ currentUser: null, isAuthenticated: false });
+      },
     }),
     {
       name: 'conference-hub-auth',

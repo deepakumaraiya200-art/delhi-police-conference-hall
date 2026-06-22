@@ -547,7 +547,7 @@ export const bookings: Booking[] = [
     date: f1,
     startTime: '14:00',
     endTime: '15:30',
-    status: 'pending',
+    status: 'reserved',
     createdAt: fmtDateTime(today),
   },
   {
@@ -603,7 +603,7 @@ export const bookings: Booking[] = [
     date: f3,
     startTime: '14:00',
     endTime: '16:30',
-    status: 'pending',
+    status: 'reserved',
     createdAt: fmtDateTime(today),
   },
   {
@@ -645,7 +645,7 @@ export const bookings: Booking[] = [
     date: f5,
     startTime: '11:00',
     endTime: '13:00',
-    status: 'pending',
+    status: 'reserved',
     createdAt: fmtDateTime(today),
   },
   {
@@ -687,7 +687,7 @@ export const bookings: Booking[] = [
     date: f7,
     startTime: '11:00',
     endTime: '12:30',
-    status: 'pending',
+    status: 'reserved',
     createdAt: fmtDateTime(today),
   },
   {
@@ -729,7 +729,7 @@ export const bookings: Booking[] = [
     date: f9,
     startTime: '10:00',
     endTime: '12:00',
-    status: 'pending',
+    status: 'reserved',
     createdAt: fmtDateTime(today),
   },
   {
@@ -771,7 +771,7 @@ export const bookings: Booking[] = [
     date: f12,
     startTime: '14:00',
     endTime: '15:30',
-    status: 'pending',
+    status: 'reserved',
     createdAt: fmtDateTime(today),
   },
   {
@@ -799,7 +799,7 @@ export const bookings: Booking[] = [
     date: f14,
     startTime: '09:00',
     endTime: '10:30',
-    status: 'pending',
+    status: 'reserved',
     createdAt: fmtDateTime(today),
   },
   {

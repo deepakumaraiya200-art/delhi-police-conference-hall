@@ -10,14 +10,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
-  CalendarCheck, CheckCircle2, Clock, Plus, ArrowRight, Building2, FileText,
+  CalendarCheck, CheckCircle2, Plus, ArrowRight, Building2,
   Shield, ShieldCheck, Star, Crown, BadgeCheck, User as UserIcon,
 } from 'lucide-react';
 import { rooms as allRoomsData } from '@/data/rooms';
-import { useUserBookings, useUpcomingBookings } from '@/hooks/useBookings';
+import { useUserBookings } from '@/hooks/useBookings';
 import { useUserStore } from '@/store/userStore';
 import type { Booking, Room, OfficerRank } from '@/types';
-import { getRankLabel, RANK_COLORS, isOfficerRank } from '@/types';
+import { getRankLabel, isOfficerRank } from '@/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 
@@ -170,18 +170,16 @@ export default function UserDashboard() {
   const { upcoming, completed, cancelled } = useMemo(() => {
     if (!myBookings) return { upcoming: [], completed: [], cancelled: [] };
     const upcoming = myBookings
-      .filter((b) => (b.status === 'confirmed' || b.status === 'pending') && (b.date > todayStr || (b.date === todayStr && b.startTime > currentTime)))
+      .filter((b) => (b.status === 'confirmed' || b.status === 'reserved' || b.status === 'ongoing') && (b.date > todayStr || (b.date === todayStr && b.startTime > currentTime)))
       .sort((a, b) => `${a.date}T${a.startTime}`.localeCompare(`${b.date}T${b.startTime}`));
     const completed = myBookings
-      .filter((b) => b.status === 'completed' || (b.date < todayStr && (b.status === 'confirmed' || b.status === 'pending')))
+      .filter((b) => b.status === 'completed' || (b.date < todayStr && (b.status === 'confirmed' || b.status === 'reserved')))
       .sort((a, b) => `${b.date}T${b.startTime}`.localeCompare(`${a.date}T${a.startTime}`));
     const cancelled = myBookings
       .filter((b) => b.status === 'cancelled')
       .sort((a, b) => `${b.date}T${b.startTime}`.localeCompare(`${a.date}T${a.startTime}`));
     return { upcoming, completed, cancelled };
   }, [myBookings, todayStr, currentTime]);
-
-  const completedWithoutMOM = completed.filter((b) => b.status === 'completed' && !b.mom);
 
   const officerRole = isOfficerRank(currentUser?.role ?? 'user')
     ? (currentUser!.role as OfficerRank)
@@ -219,30 +217,14 @@ export default function UserDashboard() {
           iconBg="bg-emerald-50"
         />
         <StatisticsCard
-          title="Pending MOM"
-          value={completedWithoutMOM.length}
-          description="Minutes not yet submitted"
-          icon={FileText}
-          iconColor="text-amber-600"
-          iconBg="bg-amber-50"
+          title="Cancelled"
+          value={cancelled.length}
+          description="Cancelled bookings"
+          icon={Building2}
+          iconColor="text-red-500"
+          iconBg="bg-red-50"
         />
       </div>
-
-      {/* MOM reminder */}
-      {completedWithoutMOM.length > 0 && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
-          <FileText className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-amber-800">Minutes of Meeting pending</p>
-            <p className="text-xs text-amber-700 mt-0.5">
-              You have {completedWithoutMOM.length} completed meeting{completedWithoutMOM.length > 1 ? 's' : ''} without submitted minutes.
-            </p>
-          </div>
-          <Button size="sm" variant="outline" className="shrink-0 border-amber-300 text-amber-800 hover:bg-amber-100" onClick={() => navigate('/my-bookings')}>
-            Submit MOM
-          </Button>
-        </div>
-      )}
 
       {/* Upcoming meetings */}
       <div className="space-y-4">
@@ -325,11 +307,6 @@ export default function UserDashboard() {
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Cancelled</span>
               <Badge variant="destructive">{cancelled.length}</Badge>
-            </div>
-            <Separator />
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">MOM Submitted</span>
-              <Badge variant="secondary">{completed.filter((b) => b.mom).length}</Badge>
             </div>
           </CardContent>
         </Card>

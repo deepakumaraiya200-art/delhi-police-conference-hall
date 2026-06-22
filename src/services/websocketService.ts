@@ -65,7 +65,7 @@ class MockWebSocketService {
           timestamp: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
         });
       } else {
-        const activeBookings = mockBookings.filter(b => b.status === 'confirmed' || b.status === 'pending');
+        const activeBookings = mockBookings.filter(b => b.status === 'confirmed' || b.status === 'reserved' || b.status === 'ongoing');
         if (activeBookings.length > 0) {
           const randomBooking = activeBookings[Math.floor(Math.random() * activeBookings.length)];
           this.emit('booking-cancelled', {

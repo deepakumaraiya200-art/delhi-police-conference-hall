@@ -32,7 +32,8 @@ function timeDisplay(t: string) {
 
 const STATUS_BADGE: Record<string, string> = {
   confirmed: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  pending: 'bg-amber-50 text-amber-700 border-amber-200',
+  ongoing:   'bg-blue-50 text-blue-700 border-blue-200',
+  reserved:  'bg-amber-50 text-amber-700 border-amber-200',
   completed: 'bg-gray-50 text-gray-600 border-gray-200',
   cancelled: 'bg-red-50 text-red-600 border-red-200',
 };
@@ -172,7 +173,7 @@ export default function AdminBookings() {
 
         {booking.mom && (
           <div className="text-xs bg-emerald-50 border border-emerald-100 rounded-lg px-2 py-1 text-emerald-700 line-clamp-2">
-            MOM: {booking.mom}
+            MOS: {booking.mom}
           </div>
         )}
 
@@ -204,7 +205,7 @@ export default function AdminBookings() {
     if (!allBookings) return { total: 0, upcoming: 0, completed: 0, cancelled: 0 };
     return {
       total: allBookings.length,
-      upcoming: allBookings.filter((b) => b.date >= todayStr && (b.status === 'confirmed' || b.status === 'pending')).length,
+      upcoming: allBookings.filter((b) => b.date >= todayStr && (b.status === 'confirmed' || b.status === 'reserved' || b.status === 'ongoing')).length,
       completed: allBookings.filter((b) => b.status === 'completed').length,
       cancelled: allBookings.filter((b) => b.status === 'cancelled').length,
     };

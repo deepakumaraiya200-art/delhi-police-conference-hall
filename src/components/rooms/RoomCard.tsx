@@ -42,7 +42,7 @@ export function RoomCard({ room, view = 'grid' }: RoomCardProps) {
               <Building2 className={cn(
                 "w-7 h-7",
                 room.status === 'available' ? 'text-emerald-500' :
-                room.status === 'occupied' ? 'text-red-500' : 'text-amber-500'
+                room.status === 'occupied' ? 'text-red-500' : room.status === 'reserved' ? 'text-amber-500' : 'text-slate-400'
               )} />
             )}
           </div>

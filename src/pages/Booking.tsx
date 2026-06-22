@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { PageHeader } from '@/components/common/PageHeader';
 import { ConfirmationDialog } from '@/components/common/ConfirmationDialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,17 +15,16 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import {
-  CalendarPlus, Calendar, Clock, MapPin, Users, User, FileText, ArrowLeft,
+  Calendar, Clock, MapPin, Users, User, ArrowLeft,
   Loader2, CheckCircle2, Building2, Send, AlertTriangle, ShieldAlert,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRooms } from '@/hooks/useRooms';
-import { useCreateBooking } from '@/hooks/useBookings';
+import { useCreateBooking, useRoomBookings } from '@/hooks/useBookings';
 import { useUserStore } from '@/store/userStore';
-import { useNotificationStore } from '@/store/notificationStore';
 import { users } from '@/data/users';
 import { checkBufferConflict, findOverrideCandidates } from '@/services/bookingService';
-import type { Room } from '@/types';
+import type { Booking } from '@/types';
 import { getRankLabel } from '@/types';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -67,11 +65,11 @@ export default function Booking() {
   const { data: rooms, isLoading: roomsLoading } = useRooms();
   const createBookingMutation = useCreateBooking();
   const currentUser = useUserStore((state) => state.currentUser);
-  const { addNotification } = useNotificationStore();
 
   const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
   const [pendingData, setPendingData] = React.useState<BookingFormData | null>(null);
   const [bufferError, setBufferError] = React.useState<string | null>(null);
+  const [bufferConflictBooking, setBufferConflictBooking] = React.useState<Booking | null>(null);
   const [overrideCandidates, setOverrideCandidates] = React.useState<ReturnType<typeof findOverrideCandidates>>([]);
 
   const {
@@ -92,6 +90,8 @@ export default function Booking() {
   });
 
   const watchedValues = watch();
+  // Load all bookings for the selected room so conflict check works for all users (not just own bookings)
+  const { data: roomBookings } = useRoomBookings(watchedValues.roomId);
 
   const selectedRoom = React.useMemo(() => {
     if (!rooms || !watchedValues.roomId) return undefined;
@@ -111,24 +111,32 @@ export default function Booking() {
       return;
     }
 
-    const conflict = checkBufferConflict(roomId, date, startTime, endTime);
+    // Use room-specific bookings (all users) so officers can see other people's conflicts
+    const bookingsForCheck = roomBookings ?? [];
+
+    // Step 1: find all override candidates (junior bookings this user can/can't override)
+    const candidates = currentUser
+      ? findOverrideCandidates(roomId, date, startTime, endTime, currentUser.id, bookingsForCheck)
+      : [];
+    setOverrideCandidates(candidates);
+
+    // Step 2: exclude junior conflicts from the buffer check (they'll be auto-cancelled on submit)
+    const juniorIds = candidates.map((c) => c.booking.id);
+
+    // Step 3: check for REAL conflicts (with seniors or same-rank officers)
+    const conflict = checkBufferConflict(roomId, date, startTime, endTime, juniorIds, bookingsForCheck);
     if (conflict) {
+      setBufferConflictBooking(conflict.booking);
       if (conflict.type === 'overlap') {
-        setBufferError(`This hall is already booked from ${formatTimeDisplay(conflict.booking.startTime)} to ${formatTimeDisplay(conflict.booking.endTime)}.`);
+        setBufferError(`This hall is already booked from ${formatTimeDisplay(conflict.booking.startTime)} to ${formatTimeDisplay(conflict.booking.endTime)} by "${conflict.booking.organizer}". Only a higher-ranked officer can override this booking.`);
       } else {
-        setBufferError(`A 30-minute buffer is required between meetings. Another meeting ends at ${formatTimeDisplay(conflict.booking.endTime)} or starts at ${formatTimeDisplay(conflict.booking.startTime)}.`);
+        setBufferError(`30-minute buffer required. "${conflict.booking.organizer}" has a meeting ${conflict.type === 'buffer' && conflict.booking.endTime <= startTime ? 'ending' : 'starting'} at ${formatTimeDisplay(conflict.booking.endTime <= startTime ? conflict.booking.endTime : conflict.booking.startTime)}.`);
       }
-      setOverrideCandidates([]);
-      return;
+    } else {
+      setBufferError(null);
+      setBufferConflictBooking(null);
     }
-
-    setBufferError(null);
-
-    if (currentUser) {
-      const candidates = findOverrideCandidates(roomId, date, startTime, endTime, currentUser.id);
-      setOverrideCandidates(candidates);
-    }
-  }, [watchedValues.roomId, watchedValues.date, watchedValues.startTime, watchedValues.endTime, currentUser]);
+  }, [watchedValues.roomId, watchedValues.date, watchedValues.startTime, watchedValues.endTime, currentUser, roomBookings]);
 
   const onFormSubmit = (data: BookingFormData) => {
     if (bufferError) return;
@@ -141,7 +149,7 @@ export default function Booking() {
     setShowConfirmDialog(false);
 
     try {
-      const { booking, cancelledBookings } = await createBookingMutation.mutateAsync({
+      const { cancelledBookings } = await createBookingMutation.mutateAsync({
         roomId: pendingData.roomId,
         userId: currentUser.id,
         title: pendingData.title,
@@ -154,31 +162,8 @@ export default function Booking() {
         status: 'confirmed',
       });
 
-      // Add notifications for overridden bookings
-      cancelledBookings.forEach((cb) => {
-        const juniorUser = users.find((u) => u.id === cb.userId);
-        const notifMsg = `Your booking "${cb.title}" for ${selectedRoom?.name ?? 'a hall'} on ${pendingData.date} has been overridden by ${getRankLabel(currentUser.role)} ${currentUser.name}.`;
-
-        addNotification({
-          id: `notif-override-${Date.now()}-${cb.id}`,
-          type: 'booking_overridden',
-          message: notifMsg,
-          timestamp: new Date().toISOString(),
-          read: false,
-          userId: cb.userId,
-        });
-
-        // Admin notification
-        addNotification({
-          id: `notif-admin-${Date.now()}-${cb.id}`,
-          type: 'booking_overridden',
-          message: `[Override] ${getRankLabel(currentUser.role)} ${currentUser.name} has overridden "${cb.title}" (booked by ${juniorUser?.name ?? 'officer'}) in ${selectedRoom?.name ?? 'a hall'} on ${pendingData.date}.`,
-          timestamp: new Date().toISOString(),
-          read: false,
-          userId: 'u-admin',
-        });
-      });
-
+      // Backend handles all notifications (junior override, caretaker, admin, and booking confirmation).
+      // Nothing to do here on the frontend.
       const overrideCount = cancelledBookings.length;
       if (overrideCount > 0) {
         toast.success(`Booking confirmed. ${overrideCount} conflicting booking${overrideCount > 1 ? 's were' : ' was'} cancelled.`, {
@@ -191,8 +176,9 @@ export default function Booking() {
       }
 
       navigate('/my-bookings');
-    } catch {
-      toast.error('Failed to create booking. Please try again.');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to create booking. Please try again.';
+      toast.error(msg);
     }
   };
 
@@ -371,6 +357,24 @@ export default function Booking() {
                         <Badge variant="outline" className="text-[10px] font-normal">+{selectedRoom.amenities.length - 5} more</Badge>
                       )}
                     </div>
+
+                    {/* Conflict detail — shown when selected date/time clashes */}
+                    {bufferConflictBooking && (
+                      <div className="rounded-lg border border-red-200 bg-red-50 p-3 space-y-1">
+                        <p className="text-xs font-semibold text-red-800 flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                          {bufferError?.includes('buffer') ? 'Within buffer window of an existing meeting' : 'Hall already booked for this time'}
+                        </p>
+                        <p className="text-xs text-red-700 pl-5">
+                          <span className="font-medium">"{bufferConflictBooking.title}"</span>
+                          {' '}— chaired by {bufferConflictBooking.organizer}
+                        </p>
+                        <p className="text-xs text-red-600 pl-5">
+                          {formatTimeDisplay(bufferConflictBooking.startTime)} – {formatTimeDisplay(bufferConflictBooking.endTime)}
+                          {bufferError?.includes('buffer') && ' (30-min buffer applies)'}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>

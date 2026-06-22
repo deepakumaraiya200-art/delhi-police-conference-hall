@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Navbar } from './Navbar';
+import { DebugAccountSwitcher } from '@/components/debug/DebugAccountSwitcher';
 import { cn } from '@/lib/utils';
 import { Toaster } from 'sonner';
 
@@ -46,6 +47,7 @@ export function MainLayout() {
       </main>
 
       <Toaster position="top-right" richColors closeButton />
+      <DebugAccountSwitcher />
     </div>
   );
 }

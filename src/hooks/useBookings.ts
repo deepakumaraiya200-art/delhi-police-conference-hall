@@ -11,6 +11,9 @@ import {
   updateBooking,
   cancelBooking,
   submitMOM,
+  submitMOS,
+  markBookingComplete,
+  markBookingOngoing,
 } from '@/services/bookingService';
 import { useBookingStore } from '@/store/bookingStore';
 
@@ -126,6 +129,45 @@ export function useSubmitMOM() {
 
   return useMutation({
     mutationFn: ({ id, mom }: { id: string; mom: string }) => submitMOM(id, mom),
+    onSuccess: (updated) => {
+      updateBookingStore(updated.id, { mom: updated.mom });
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    },
+  });
+}
+
+export function useMarkBookingComplete() {
+  const queryClient = useQueryClient();
+  const updateBookingStore = useBookingStore((state) => state.updateBooking);
+
+  return useMutation({
+    mutationFn: (id: string) => markBookingComplete(id),
+    onSuccess: (updated) => {
+      updateBookingStore(updated.id, { status: 'completed' });
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    },
+  });
+}
+
+export function useMarkBookingOngoing() {
+  const queryClient = useQueryClient();
+  const updateBookingStore = useBookingStore((state) => state.updateBooking);
+
+  return useMutation({
+    mutationFn: (id: string) => markBookingOngoing(id),
+    onSuccess: (updated) => {
+      updateBookingStore(updated.id, { status: 'ongoing' });
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    },
+  });
+}
+
+export function useSubmitMOS() {
+  const queryClient = useQueryClient();
+  const updateBookingStore = useBookingStore((state) => state.updateBooking);
+
+  return useMutation({
+    mutationFn: ({ id, mom }: { id: string; mom: string }) => submitMOS(id, mom),
     onSuccess: (updated) => {
       updateBookingStore(updated.id, { mom: updated.mom });
       queryClient.invalidateQueries({ queryKey: ['bookings'] });

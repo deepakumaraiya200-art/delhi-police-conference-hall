@@ -4,8 +4,8 @@ import { z } from 'zod';
 
 export type Tower = 'Tower I' | 'Tower II' | 'Bridge Tower';
 export type RoomType = 'Conference Hall' | 'Auditorium' | 'Mini Auditorium';
-export type RoomStatus = 'available' | 'occupied' | 'reserved';
-export type BookingStatus = 'confirmed' | 'pending' | 'cancelled' | 'completed';
+export type RoomStatus = 'available' | 'occupied' | 'reserved' | 'under_maintenance';
+export type BookingStatus = 'confirmed' | 'ongoing' | 'reserved' | 'cancelled' | 'completed';
 export type LoginType = 'admin' | 'caretaker' | 'officer';
 export type OfficerRank = 'cp' | 'special_cp' | 'joint_cp' | 'additional_cp' | 'dcp' | 'acp' | 'si' | 'user';
 export type UserRole = 'admin' | 'caretaker' | OfficerRank;
@@ -105,6 +105,7 @@ export interface User {
   loginType: LoginType;
   assignedRooms?: string[];
   avatar: string;
+  demoEmail?: string;  // yopmail address for OTP demo (check at yopmail.com)
 }
 
 export interface Room {

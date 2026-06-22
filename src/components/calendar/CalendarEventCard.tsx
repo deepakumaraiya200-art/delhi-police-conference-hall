@@ -8,9 +8,10 @@ interface CalendarEventCardProps {
 }
 
 export function CalendarEventCard({ booking, onClick }: CalendarEventCardProps) {
-  const statusColors = {
+  const statusColors: Record<string, string> = {
     confirmed: 'bg-primary text-white',
-    pending: 'bg-amber-500 text-white',
+    ongoing:   'bg-blue-500 text-white',
+    reserved:  'bg-amber-500 text-white',
     cancelled: 'bg-gray-400 text-white line-through',
     completed: 'bg-emerald-600 text-white',
   };

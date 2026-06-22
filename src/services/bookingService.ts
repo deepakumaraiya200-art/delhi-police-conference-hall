@@ -1,15 +1,11 @@
 import type { Booking } from '@/types';
 import { isSeniorTo, getRankLabel } from '@/types';
-import { bookings as mockBookings } from '@/data/bookings';
 import { users } from '@/data/users';
+import { api } from './api';
+import { useBookingStore } from '@/store/bookingStore';
 import { format } from 'date-fns';
 
-const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
-
-let bookingsData = [...mockBookings];
-let nextId = bookingsData.length + 1;
-
-// ─── Time Helpers ────────────────────────────────────────────────────────────
+// ── Time helpers (used for client-side pre-flight checks) ───────────────────
 
 function toMinutes(time: string): number {
   const [h, m] = time.split(':').map(Number);
@@ -18,7 +14,7 @@ function toMinutes(time: string): number {
 
 const BUFFER_MINUTES = 30;
 
-// ─── Buffer Conflict Check ───────────────────────────────────────────────────
+// ── Buffer Conflict Check (client-side, uses Zustand cache) ─────────────────
 
 export interface BufferConflict {
   booking: Booking;
@@ -30,39 +26,33 @@ export function checkBufferConflict(
   date: string,
   startTime: string,
   endTime: string,
-  excludeBookingId?: string
+  excludeBookingIds: string[] = [],
+  bookingsOverride?: Booking[]
 ): BufferConflict | null {
-  const active = bookingsData.filter(
+  const bookings = bookingsOverride ?? useBookingStore.getState().bookings;
+  const active = bookings.filter(
     (b) =>
       b.roomId === roomId &&
       b.date === date &&
       b.status !== 'cancelled' &&
-      b.id !== excludeBookingId
+      b.status !== 'completed' &&
+      !excludeBookingIds.includes(b.id)
   );
 
   const newStart = toMinutes(startTime);
-  const newEnd = toMinutes(endTime);
+  const newEnd   = toMinutes(endTime);
 
   for (const b of active) {
     const bStart = toMinutes(b.startTime);
-    const bEnd = toMinutes(b.endTime);
-
-    // Direct overlap
-    if (newStart < bEnd && newEnd > bStart) {
-      return { booking: b, type: 'overlap' };
-    }
-    // Buffer violation: new meeting within 30 min of an existing meeting
-    if (newStart >= bEnd && newStart < bEnd + BUFFER_MINUTES) {
-      return { booking: b, type: 'buffer' };
-    }
-    if (newEnd <= bStart && newEnd > bStart - BUFFER_MINUTES) {
-      return { booking: b, type: 'buffer' };
-    }
+    const bEnd   = toMinutes(b.endTime);
+    if (newStart < bEnd && newEnd > bStart)                          return { booking: b, type: 'overlap' };
+    if (newStart >= bEnd  && newStart < bEnd  + BUFFER_MINUTES) return { booking: b, type: 'buffer' };
+    if (newEnd   <= bStart && newEnd   > bStart - BUFFER_MINUTES) return { booking: b, type: 'buffer' };
   }
   return null;
 }
 
-// ─── Senior Override Check ──────────────────────────────────────────────────
+// ── Senior Override Check (client-side, same logic as backend) ──────────────
 
 export interface OverrideCandidate {
   booking: Booking;
@@ -76,17 +66,18 @@ export function findOverrideCandidates(
   date: string,
   startTime: string,
   endTime: string,
-  seniorUserId: string
+  seniorUserId: string,
+  bookingsOverride?: Booking[]
 ): OverrideCandidate[] {
   const seniorUser = users.find((u) => u.id === seniorUserId);
   if (!seniorUser) return [];
 
-  const candidates: OverrideCandidate[] = [];
+  const bookings = bookingsOverride ?? useBookingStore.getState().bookings;
   const now = new Date();
   const newStart = toMinutes(startTime);
-  const newEnd = toMinutes(endTime);
+  const newEnd   = toMinutes(endTime);
 
-  const conflicting = bookingsData.filter(
+  const conflicting = bookings.filter(
     (b) =>
       b.roomId === roomId &&
       b.date === date &&
@@ -94,156 +85,103 @@ export function findOverrideCandidates(
       b.status !== 'completed'
   );
 
+  const candidates: OverrideCandidate[] = [];
   for (const b of conflicting) {
     const bStart = toMinutes(b.startTime);
-    const bEnd = toMinutes(b.endTime);
-
-    // Check if there is a time conflict (including buffer)
-    const hasConflict =
-      (newStart < bEnd + BUFFER_MINUTES && newEnd > bStart - BUFFER_MINUTES);
+    const bEnd   = toMinutes(b.endTime);
+    const hasConflict = newStart < bEnd + BUFFER_MINUTES && newEnd > bStart - BUFFER_MINUTES;
     if (!hasConflict) continue;
 
     const juniorUser = users.find((u) => u.id === b.userId);
-    if (!juniorUser) continue;
+    if (!juniorUser || !isSeniorTo(seniorUser.role, juniorUser.role)) continue;
 
-    if (!isSeniorTo(seniorUser.role, juniorUser.role)) continue;
-
-    // Check 30-min rule: override only allowed if > 30 min before the booked meeting
-    const meetingDateTime = new Date(`${b.date}T${b.startTime}:00`);
+    const meetingDateTime   = new Date(`${b.date}T${b.startTime}:00`);
     const minutesUntilMeeting = (meetingDateTime.getTime() - now.getTime()) / 60000;
 
     if (minutesUntilMeeting <= BUFFER_MINUTES) {
-      candidates.push({
-        booking: b,
-        juniorUserId: b.userId,
-        allowed: false,
-        reason: `Cannot override: less than 30 minutes until "${b.title}" starts.`,
-      });
+      candidates.push({ booking: b, juniorUserId: b.userId, allowed: false,
+        reason: `Cannot override: less than 30 minutes until "${b.title}" starts.` });
     } else {
-      candidates.push({
-        booking: b,
-        juniorUserId: b.userId,
-        allowed: true,
-      });
+      candidates.push({ booking: b, juniorUserId: b.userId, allowed: true });
     }
   }
-
   return candidates;
 }
 
-// ─── CRUD Functions ──────────────────────────────────────────────────────────
+// ── CRUD Functions (call real backend) ──────────────────────────────────────
 
 export async function getBookings(): Promise<Booking[]> {
-  await delay(500);
-  return [...bookingsData];
+  return api.get<Booking[]>('/bookings');
 }
 
 export async function getBookingById(id: string): Promise<Booking | undefined> {
-  await delay(300);
-  return bookingsData.find((b) => b.id === id);
+  try { return await api.get<Booking>(`/bookings/${id}`); } catch { return undefined; }
 }
 
 export async function getBookingsByUser(userId: string): Promise<Booking[]> {
-  await delay(400);
-  return bookingsData.filter((b) => b.userId === userId);
+  return api.get<Booking[]>(`/bookings/user/${userId}`);
 }
 
 export async function getBookingsByRoom(roomId: string): Promise<Booking[]> {
-  await delay(400);
-  return bookingsData.filter((b) => b.roomId === roomId);
+  return api.get<Booking[]>(`/bookings/room/${roomId}`);
 }
 
 export async function getBookingsForDate(date: Date): Promise<Booking[]> {
-  await delay(400);
+  const all = await getBookings();
   const dateStr = format(date, 'yyyy-MM-dd');
-  return bookingsData.filter((b) => b.date === dateStr);
+  return all.filter((b) => b.date === dateStr);
 }
 
 export async function createBooking(
   data: Omit<Booking, 'id' | 'createdAt'>
 ): Promise<{ booking: Booking; cancelledBookings: Booking[] }> {
-  await delay(600);
-
-  const cancelledBookings: Booking[] = [];
-  const seniorUser = users.find((u) => u.id === data.userId);
-
-  // Auto-cancel junior bookings if senior is overriding
-  if (seniorUser) {
-    const candidates = findOverrideCandidates(
-      data.roomId,
-      data.date,
-      data.startTime,
-      data.endTime,
-      data.userId
-    );
-
-    for (const candidate of candidates) {
-      if (candidate.allowed) {
-        const idx = bookingsData.findIndex((b) => b.id === candidate.booking.id);
-        if (idx !== -1) {
-          bookingsData[idx] = {
-            ...bookingsData[idx],
-            status: 'cancelled',
-            cancelReason: `Overridden by ${getRankLabel(seniorUser.role)} ${seniorUser.name}`,
-            overriddenBy: data.userId,
-          };
-          cancelledBookings.push({ ...bookingsData[idx] });
-        }
-      }
-    }
-  }
-
-  const newBooking: Booking = {
-    ...data,
-    id: `booking-${nextId++}`,
-    createdAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
-  };
-  bookingsData.push(newBooking);
-  return { booking: { ...newBooking }, cancelledBookings };
+  return api.post('/bookings', {
+    roomId:            data.roomId,
+    userId:            data.userId,
+    title:             data.title,
+    description:       data.description,
+    organizer:         data.organizer,
+    participantsCount: data.participantsCount,
+    date:              data.date,
+    startTime:         data.startTime,
+    endTime:           data.endTime,
+    status:            data.status,
+  });
 }
 
 export async function updateBooking(id: string, data: Partial<Booking>): Promise<Booking> {
-  await delay(400);
-  const index = bookingsData.findIndex((b) => b.id === id);
-  if (index === -1) throw new Error(`Booking "${id}" not found`);
-  bookingsData[index] = { ...bookingsData[index], ...data };
-  return { ...bookingsData[index] };
+  return api.put<Booking>(`/bookings/${id}`, data);
 }
 
 export async function cancelBooking(id: string, reason?: string): Promise<Booking> {
-  await delay(300);
-  const index = bookingsData.findIndex((b) => b.id === id);
-  if (index === -1) throw new Error(`Booking "${id}" not found`);
-  bookingsData[index] = {
-    ...bookingsData[index],
-    status: 'cancelled',
-    cancelReason: reason,
-  };
-  return { ...bookingsData[index] };
+  return api.patch<Booking>(`/bookings/${id}/cancel`, { reason });
 }
 
 export async function submitMOM(id: string, mom: string): Promise<Booking> {
-  await delay(400);
-  const index = bookingsData.findIndex((b) => b.id === id);
-  if (index === -1) throw new Error(`Booking "${id}" not found`);
-  bookingsData[index] = { ...bookingsData[index], mom };
-  return { ...bookingsData[index] };
+  return api.put<Booking>(`/bookings/${id}`, { mom });
+}
+
+export async function markBookingComplete(id: string): Promise<Booking> {
+  return api.patch<Booking>(`/bookings/${id}/complete`);
+}
+
+export async function markBookingOngoing(id: string): Promise<Booking> {
+  return api.patch<Booking>(`/bookings/${id}/ongoing`);
+}
+
+export async function submitMOS(id: string, mom: string): Promise<Booking> {
+  return api.patch<Booking>(`/bookings/${id}/mos`, { mom });
 }
 
 export async function getTodaysBookings(): Promise<Booking[]> {
-  await delay(400);
-  const todayStr = format(new Date(), 'yyyy-MM-dd');
-  return bookingsData.filter(
-    (b) => b.date === todayStr && b.status !== 'cancelled'
-  );
+  return api.get<Booking[]>('/bookings/today');
 }
 
 export async function getUpcomingBookings(): Promise<Booking[]> {
-  await delay(400);
-  const todayStr = format(new Date(), 'yyyy-MM-dd');
-  return bookingsData.filter(
-    (b) =>
-      b.date >= todayStr &&
-      (b.status === 'confirmed' || b.status === 'pending')
-  );
+  return api.get<Booking[]>('/bookings/upcoming');
+}
+
+// Helper used by senior-override notifications in Booking.tsx
+export function getRankLabelExport(role: string): string {
+  return getRankLabel(role as Parameters<typeof getRankLabel>[0]);
 }

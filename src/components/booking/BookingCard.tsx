@@ -17,14 +17,15 @@ interface BookingCardProps {
 }
 
 export function BookingCard({ booking, room, onView, onEdit, onCancel, showActions = true }: BookingCardProps) {
-  const statusConfig = {
-    confirmed: { label: 'Confirmed', variant: 'success' as const, color: 'border border-neutral-500/30 ' },
-    pending: { label: 'Pending', variant: 'warning' as const, color: 'border-l-amber-500' },
-    cancelled: { label: 'Cancelled', variant: 'destructive' as const, color: 'border-l-red-500' },
-    completed: { label: 'Completed', variant: 'secondary' as const, color: 'border-l-gray-400' },
+  const statusConfig: Record<string, { label: string; variant: 'success' | 'warning' | 'destructive' | 'secondary' | 'default'; color: string }> = {
+    confirmed: { label: 'Confirmed', variant: 'success',    color: 'border border-neutral-500/30' },
+    ongoing:   { label: 'Ongoing',   variant: 'default',    color: 'border-l-blue-500' },
+    reserved:  { label: 'Reserved',  variant: 'warning',    color: 'border-l-amber-500' },
+    cancelled: { label: 'Cancelled', variant: 'destructive', color: 'border-l-red-500' },
+    completed: { label: 'Completed', variant: 'secondary',  color: 'border-l-gray-400' },
   };
 
-  const { label, variant, color } = statusConfig[booking.status];
+  const { label, variant, color } = statusConfig[booking.status] ?? { label: booking.status, variant: 'default' as const, color: '' };
 
   return (
     <Card className={cn('animate-fade-in border-l-4 transition-all duration-200 h-full', color)}>

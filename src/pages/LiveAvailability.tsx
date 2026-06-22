@@ -37,6 +37,14 @@ const statusConfig: Record<RoomStatus, { bg: string; text: string; dot: string; 
     cardBg: 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800',
     ring: 'ring-amber-500/20',
   },
+  under_maintenance: {
+    bg: 'bg-slate-500',
+    text: 'text-slate-700 dark:text-slate-400',
+    dot: 'bg-slate-500',
+    label: 'Maintenance',
+    cardBg: 'bg-slate-50 dark:bg-slate-950/30 border-slate-200 dark:border-slate-800',
+    ring: 'ring-slate-500/20',
+  },
 };
 
 const statuses: RoomStatus[] = ['available', 'occupied', 'reserved'];

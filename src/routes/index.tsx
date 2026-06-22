@@ -9,6 +9,7 @@ const Dashboard        = lazy(() => import('@/pages/Dashboard'));
 const CaretakerDashboard = lazy(() => import('@/pages/CaretakerDashboard'));
 const UserDashboard    = lazy(() => import('@/pages/UserDashboard'));
 const AdminBookings    = lazy(() => import('@/pages/AdminBookings'));
+const AdminUsers       = lazy(() => import('@/pages/AdminUsers'));
 const Rooms            = lazy(() => import('@/pages/Rooms'));
 const RoomDetails      = lazy(() => import('@/pages/RoomDetails'));
 const Booking          = lazy(() => import('@/pages/Booking'));
@@ -53,6 +54,14 @@ const router = createBrowserRouter([
         element: (
           <AuthGuard allowedRoles={['admin']}>
             <Wrap><AdminBookings /></Wrap>
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'admin/users',
+        element: (
+          <AuthGuard allowedRoles={['admin']}>
+            <Wrap><AdminUsers /></Wrap>
           </AuthGuard>
         ),
       },
